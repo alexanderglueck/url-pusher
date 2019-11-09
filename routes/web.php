@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UrlController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WelcomeController;
@@ -39,4 +40,8 @@ Route::post('email/resend', [VerificationController::class, 'resend'])->name('ve
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('home', [HomeController::class, 'index'])->name('home');
+
+    Route::resource('urls', UrlController::class)->only([
+        'store'
+    ]);
 });
