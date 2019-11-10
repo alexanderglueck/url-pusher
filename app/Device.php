@@ -14,4 +14,9 @@ class Device extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function scopeWithDeviceToken($builder)
+    {
+        $builder->whereNotNull('device_token');
+    }
 }

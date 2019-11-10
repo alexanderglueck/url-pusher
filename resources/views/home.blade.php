@@ -15,7 +15,7 @@
                         @endif
 
                         @if($devices->isEmpty())
-                            <p>Please add a device first.</p>
+                            <p>Please add a device first. If you already added a device make sure you signed in on your phone at least once.</p>
                         @else
                             <form action="{{ route('urls.store') }}" method="post">
                                 @csrf
