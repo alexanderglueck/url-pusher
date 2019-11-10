@@ -10,6 +10,11 @@ class Url extends Model
         'url'
     ];
 
+    public function device()
+    {
+        return $this->belongsTo(Device::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
