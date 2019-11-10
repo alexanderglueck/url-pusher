@@ -20,7 +20,7 @@
                             <form action="{{ route('urls.store') }}" method="post">
                                 @csrf
                                 <div class="input-group ">
-                                    <input type="url" class="form-control" id="url" name="url" maxlength="500" placeholder="https://www.google.com" aria-label="URL" required>
+                                    <input type="url" class="form-control @error('url') is-invalid @enderror" id="url" name="url" maxlength="500" placeholder="https://www.google.com" aria-label="URL" required autofocus>
 
                                     <select name="device_id" id="device_id" class="form-control" aria-label="Device">
                                         @foreach($devices as $device)
@@ -32,6 +32,12 @@
                                         <button type="submit" class="btn btn-primary">Push</button>
                                     </div>
                                 </div>
+
+                                @error('url')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
 
                             </form>
                         @endempty

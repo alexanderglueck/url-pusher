@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Device;
+use App\Http\Requests\DeviceDeleteRequest;
+use App\Http\Requests\DeviceStoreRequest;
+use App\Http\Requests\DeviceUpdateRequest;
 use Illuminate\Http\Request;
 
 class DeviceController extends Controller
@@ -12,9 +15,11 @@ class DeviceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return view('devices.index', [
+            'devices' => $request->user()->devices
+        ]);
     }
 
     /**
@@ -24,62 +29,61 @@ class DeviceController extends Controller
      */
     public function create()
     {
-        //
+        return view('devices.create', [
+            'device' => new Device
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(DeviceStoreRequest $request)
     {
-        //
-    }
+        $request->user()->devices()->create($request->validated());
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Device  $device
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Device $device)
-    {
-        //
+        return redirect()->route('devices.index');
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Device  $device
+     * @param \App\Device $device
      * @return \Illuminate\Http\Response
      */
     public function edit(Device $device)
     {
-        //
+        return view('devices.edit', [
+            'device' => $device
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Device  $device
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Device $device
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Device $device)
+    public function update(DeviceUpdateRequest $request, Device $device)
     {
-        //
+        $device->update($request->validated());
+
+        return back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Device  $device
+     * @param \App\Device $device
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Device $device)
+    public function destroy(DeviceDeleteRequest $request, Device $device)
     {
-        //
+        $device->delete();
+
+        return redirect()->route('devices.index');
     }
 }

@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class UrlStoreRequest extends FormRequest
+class DeviceDeleteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +13,7 @@ class UrlStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->devices()->pluck('id')->contains($this->input('device_id'));
+        return $this->user()->devices()->pluck('id')->contains($this->route('device')->id);
     }
 
     /**
@@ -25,8 +24,7 @@ class UrlStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'url' => 'required|url|max:500',
-            'device_id' => 'required'
+            //
         ];
     }
 }

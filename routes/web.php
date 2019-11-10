@@ -3,6 +3,7 @@
 use App\Http\Controllers\UrlController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -40,6 +41,10 @@ Route::post('email/resend', [VerificationController::class, 'resend'])->name('ve
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('home', [HomeController::class, 'index'])->name('home');
+
+    Route::resource('devices', DeviceController::class)->except([
+        'show'
+    ]);
 
     Route::resource('urls', UrlController::class)->only([
         'store'
