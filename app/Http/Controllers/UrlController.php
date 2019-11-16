@@ -102,17 +102,20 @@ class UrlController extends Controller
         $optionBuilder = new OptionsBuilder();
         $optionBuilder->setTimeToLive(60 * 20);
 
-        $notificationBuilder = new PayloadNotificationBuilder('New push incoming');
-        $notificationBuilder->setBody($url->url);
+        //$notificationBuilder = new PayloadNotificationBuilder('New push incoming');
+        //$notificationBuilder->setBody($url->url);
 
         $dataBuilder = new PayloadDataBuilder();
-        $dataBuilder->addData(['url' => $url->url]);
+        $dataBuilder->addData([
+            'title' => 'New push incoming',
+            'url' => $url->url
+        ]);
 
         $option = $optionBuilder->build();
-        $notification = $notificationBuilder->build();
+        //$notification = $notificationBuilder->build();
         $data = $dataBuilder->build();
 
-        $downstreamResponse = FCM::sendTo($url->device->device_token, $option, $notification, $data);
+        $downstreamResponse = FCM::sendTo($url->device->device_token, $option, null, $data);
 
         // return Array - you must remove all this tokens in your database
         // $downstreamResponse->tokensToDelete();
