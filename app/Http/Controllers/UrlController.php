@@ -108,7 +108,8 @@ class UrlController extends Controller
         $dataBuilder = new PayloadDataBuilder();
         $dataBuilder->addData([
             'title' => 'New push incoming',
-            'url' => $url->url
+            'url' => $url->url,
+            'user_id' => $url->user_id
         ]);
 
         $option = $optionBuilder->build();
