@@ -24,6 +24,7 @@ Route::post('/session', [ApiLoginController::class, 'login']);
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/remove-token', [ApiTokenController::class, 'destroy']);
+    Route::post('/attach-token', [ApiTokenController::class, 'store']);
     Route::get('/devices', [ApiDeviceController::class, 'index']);
 });
 
