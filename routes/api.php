@@ -23,7 +23,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/session', [ApiLoginController::class, 'login']);
 
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::delete('/remove-token', [ApiTokenController::class, 'destroy']);
+    Route::post('/remove-token', [ApiTokenController::class, 'destroy']);
     Route::get('/devices', [ApiDeviceController::class, 'index']);
 });
 
