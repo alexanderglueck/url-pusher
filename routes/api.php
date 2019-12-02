@@ -1,9 +1,8 @@
 <?php
 
-use App\Http\Controllers\API\ApiDeviceController;
 use App\Http\Controllers\API\ApiLoginController;
 use App\Http\Controllers\API\ApiTokenController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\API\ApiDeviceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,10 +14,6 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
 Route::post('/session', [ApiLoginController::class, 'login']);
 
