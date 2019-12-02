@@ -37,6 +37,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('devices.index') }}">{{ __('Manage devices') }}</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ asset('storage/url-pusher.apk') }}">{{ __('Download Android App') }}</a>
+                        </li>
                         @endauth
                     </ul>
 
