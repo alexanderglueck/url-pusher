@@ -85,14 +85,9 @@
                 </div>
 
                 <div class="links">
-                    <a href="https://laravel.com/docs">Docs</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://blog.laravel.com">Blog</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://vapor.laravel.com">Vapor</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
+                    <a href="{{ asset('storage/url-pusher.apk' )}}">Android App download</a>
+                    <a href="https://github.com/alexanderglueck/url-pusher">GitHub</a>
+                    <a href="https://github.com/alexanderglueck/url-pusher-android">GitHub - Android App</a>
                 </div>
             </div>
         </div>
