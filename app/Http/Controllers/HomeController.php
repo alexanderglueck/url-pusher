@@ -15,7 +15,8 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         return view('home', [
-            'devices' => $request->user()->devices()->withDeviceToken()->get()
+            'devices' => $request->user()->devices()->withDeviceToken()->get(),
+            'urls' => $request->user()->urls()->latest()->limit(15)->with('device')->get()
         ]);
     }
 }

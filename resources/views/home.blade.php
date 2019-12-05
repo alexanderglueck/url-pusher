@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card">
+                <div class="card mb-4">
                     <div class="card-header">Dashboard</div>
 
                     <div class="card-body">
@@ -15,12 +15,15 @@
                         @endif
 
                         @if($devices->isEmpty())
-                            <p>Please add a device first. If you already added a device make sure you signed in on your phone at least once.</p>
+                            <p>Please add a device first. If you already added a device make sure you signed in on your
+                                phone at least once.</p>
                         @else
                             <form action="{{ route('urls.store') }}" method="post">
                                 @csrf
                                 <div class="input-group ">
-                                    <input type="url" class="form-control @error('url') is-invalid @enderror" id="url" name="url" maxlength="500" placeholder="https://www.google.com" aria-label="URL" required autofocus>
+                                    <input type="url" class="form-control @error('url') is-invalid @enderror" id="url"
+                                           name="url" maxlength="500" placeholder="https://www.google.com"
+                                           aria-label="URL" required autofocus>
 
                                     <select name="device_id" id="device_id" class="form-control" aria-label="Device">
                                         @foreach($devices as $device)
@@ -42,6 +45,30 @@
                             </form>
                         @endempty
                     </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">Recent pushes</div>
+
+                    @if($urls->isEmpty())
+                        <div class="card-body">
+                            <p>You have not pushed anything. Try pushing your first URL.</p>
+                        </div>
+                    @else
+                        <ul class="list-group list-group-flush">
+                            @foreach($urls as $url)
+                                <li class="list-group-item">
+                                    <a href="{{ $url->url }}" target="_blank" rel="noopener noreferrer">
+                                        {{ $url->url }}
+                                    </a>
+                                    <span class="d-flex">
+                                        <small class="flex-fill">{{ $url->device->name }}</small>
+                                        <small>{{ $url->created_at->diffForHumans() }}</small>
+                                    </span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endempty
                 </div>
             </div>
         </div>
