@@ -60,7 +60,7 @@
                                 <li class="list-group-item">
                                     <span class="d-flex flex-column">
                                          <a class="flex-fill" href="{{ $url->url }}" target="_blank" rel="noopener noreferrer">
-                                            {{ $url->title ?: $url->url }}
+                                            {{ $url->title }}
                                         </a>
                                         <a class="text-body" href="{{ $url->url }}" target="_blank" rel="noopener noreferrer">
                                             <small class="">{{ $url->url }}</small>
