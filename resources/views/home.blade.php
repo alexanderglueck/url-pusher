@@ -58,9 +58,15 @@
                         <ul class="list-group list-group-flush">
                             @foreach($urls as $url)
                                 <li class="list-group-item">
-                                    <a href="{{ $url->url }}" target="_blank" rel="noopener noreferrer">
-                                        {{ $url->url }}
-                                    </a>
+                                    <span class="d-flex flex-column">
+                                         <a class="flex-fill" href="{{ $url->url }}" target="_blank" rel="noopener noreferrer">
+                                            {{ $url->title ?: $url->url }}
+                                        </a>
+                                        <a class="text-body" href="{{ $url->url }}" target="_blank" rel="noopener noreferrer">
+                                            <small class="">{{ $url->url }}</small>
+                                        </a>
+                                    </span>
+
                                     <span class="d-flex">
 
                                         <small class="flex-fill">
