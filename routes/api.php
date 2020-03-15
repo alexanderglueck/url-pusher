@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ApiLoginController;
 use App\Http\Controllers\API\ApiTokenController;
 use App\Http\Controllers\API\ApiDeviceController;
