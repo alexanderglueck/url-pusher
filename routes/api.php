@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ApiLoginController;
 use App\Http\Controllers\API\ApiTokenController;
 use App\Http\Controllers\API\ApiDeviceController;
+use App\Http\Controllers\API\ApiUrlController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,5 +23,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/remove-token', [ApiTokenController::class, 'destroy']);
     Route::post('/attach-token', [ApiTokenController::class, 'store']);
     Route::get('/devices', [ApiDeviceController::class, 'index']);
+    Route::post('/urls', [ApiUrlController::class, 'store']);
 });
 
