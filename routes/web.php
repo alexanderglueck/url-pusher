@@ -47,6 +47,7 @@ Route::group(['middleware' => 'auth'], function () {
     ]);
 
     Route::resource('urls', UrlController::class)->only([
-        'store'
+        'store',
+        'destroy'
     ]);
 });

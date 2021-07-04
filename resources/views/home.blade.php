@@ -67,9 +67,9 @@
                                         </a>
                                     </span>
 
-                                    <span class="d-flex">
+                                    <div class="d-flex justify-content-between align-items-center">
 
-                                        <small class="flex-fill">
+                                        <small class="">
                                             {{ $url->device->name }}
 
                                             @if($url->device->device_token)
@@ -78,8 +78,18 @@
                                                 </a>
                                             @endif
                                         </small>
-                                        <small>{{ $url->created_at->diffForHumans() }}</small>
-                                    </span>
+
+                                        <div>
+                                            <form action="{{ route('urls.destroy', $url) }}" method="post" class="confirm-delete d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <small>
+                                                    <button class="btn btn-link p-0 m-0" style="font-size: 100%;vertical-align: inherit">Delete</button>
+                                                </small>
+                                            </form>
+                                            <small>{{ $url->created_at->diffForHumans() }}</small>
+                                        </div>
+                                    </div>
                                 </li>
                             @endforeach
                         </ul>

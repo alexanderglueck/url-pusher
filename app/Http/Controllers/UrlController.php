@@ -97,7 +97,9 @@ class UrlController extends Controller
      */
     public function destroy(Url $url)
     {
-        //
+        $url->delete();
+
+        return redirect()->route('home');
     }
 
     private function sendToDevice(Url $url)
