@@ -22,22 +22,7 @@ class FetchMissingTitles extends Command
      */
     protected $description = 'Fetches missing titles from URLs that were pushed before titles were fetched';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
+    public function handle(): int
     {
         DB::table('urls')->select('id', 'url')->whereNull('title')->chunkById(100, function ($urls) {
             foreach ($urls as $url) {
@@ -49,5 +34,7 @@ class FetchMissingTitles extends Command
                     ->update(['title' => $info->title ?: $url->url]);
             }
         });
+
+        return 0;
     }
 }

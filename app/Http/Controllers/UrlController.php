@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Url;
 use Embed\Embed;
+use Illuminate\Http\RedirectResponse;
 use LaravelFCM\Facades\FCM;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\UrlStoreRequest;
 use LaravelFCM\Message\OptionsBuilder;
@@ -13,33 +13,7 @@ use LaravelFCM\Message\PayloadDataBuilder;
 
 class UrlController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param UrlStoreRequest $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(UrlStoreRequest $request)
+    public function store(UrlStoreRequest $request): RedirectResponse
     {
         $url = new Url($request->validated());
         $url->device_id = $request->input('device_id');
@@ -55,54 +29,14 @@ class UrlController extends Controller
         return redirect()->back();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param \App\Url $url
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Url $url)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \App\Url $url
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Url $url)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Url $url
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Url $url)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \App\Url $url
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Url $url)
+    public function destroy(Url $url): RedirectResponse
     {
         $url->delete();
 
         return redirect()->route('home');
     }
 
-    private function sendToDevice(Url $url)
+    private function sendToDevice(Url $url): void
     {
         $optionBuilder = new OptionsBuilder();
         $optionBuilder->setTimeToLive(60 * 20);
@@ -130,7 +64,7 @@ class UrlController extends Controller
         ]);
     }
 
-    private function getMetaData(Url $url)
+    private function getMetaData(Url $url): void
     {
         $info = Embed::create($url->url);
 

@@ -6,22 +6,12 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class DeviceDeleteRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
+    public function authorize(): bool
     {
         return $this->user()->devices()->pluck('id')->contains($this->route('device')->id);
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             //

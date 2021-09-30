@@ -4,12 +4,13 @@ namespace App\Http\Controllers\API;
 
 use App\Device;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class ApiTokenController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         Log::info('input', $request->all());
 
@@ -19,12 +20,12 @@ class ApiTokenController extends Controller
                 'device_token' => $request->input('token')
             ]);
 
-        return [
+        return response()->json([
             "success" => true
-        ];
+        ]);
     }
 
-    public function destroy(Request $request)
+    public function destroy(Request $request): JsonResponse
     {
         Log::info('input', $request->all());
 
@@ -33,8 +34,8 @@ class ApiTokenController extends Controller
                 'device_token' => null
             ]);
 
-        return [
+        return response()->json([
             "success" => true
-        ];
+        ]);
     }
 }

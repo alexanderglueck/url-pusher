@@ -2,8 +2,10 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Device extends Model
 {
@@ -13,13 +15,13 @@ class Device extends Model
         'name'
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function scopeWithDeviceToken($builder)
+    public function scopeWithDeviceToken(Builder $query): Builder
     {
-        $builder->whereNotNull('device_token');
+        return $query->whereNotNull('device_token');
     }
 }
