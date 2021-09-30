@@ -10,6 +10,7 @@
     "require": {
         "php": "^8.0.0",
         "apility/laravel-fcm": "1.4.*",
+        "artesaos/seotools": "^0.20.2",
         "embed/embed": "^3.4",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
