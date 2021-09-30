@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class ApiLoginController extends Controller
 {
-    public function login(Request $request): JsonResponse
+    public function login(Request $request): JsonResponse|User
     {
         $this->validate($request, [
             'email' => 'required|email',
