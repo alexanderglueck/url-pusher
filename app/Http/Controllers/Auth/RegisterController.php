@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\User;
+use Artesaos\SEOTools\Facades\SEOTools;
+use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -39,6 +41,16 @@ class RegisterController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+    }
+
+    public function showRegistrationForm(): View
+    {
+        SEOTools::setTitle('Register - ' . config('app.name'));
+        SEOTools::setDescription('Create an account and start pushing URLs to your Android phone.');
+        SEOTools::opengraph()->setUrl(route('register'));
+        SEOTools::setCanonical(route('register'));
+
+        return view('auth.register');
     }
 
     /**

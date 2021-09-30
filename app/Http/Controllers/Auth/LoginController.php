@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Artesaos\SEOTools\Facades\SEOTools;
+use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -35,5 +37,15 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    public function showLoginForm(): View
+    {
+        SEOTools::setTitle('Login - ' . config('app.name'));
+        SEOTools::setDescription('Sign in to access your recent pushes.');
+        SEOTools::opengraph()->setUrl(route('login'));
+        SEOTools::setCanonical(route('login'));
+
+        return view('auth.login');
     }
 }

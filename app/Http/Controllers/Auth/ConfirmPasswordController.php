@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Artesaos\SEOTools\Facades\SEOTools;
+use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\ConfirmsPasswords;
 
 class ConfirmPasswordController extends Controller
@@ -35,5 +37,15 @@ class ConfirmPasswordController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+    }
+
+    public function showConfirmForm(): View
+    {
+        SEOTools::setTitle('Confirm Password  - ' . config('app.name'));
+        SEOTools::setDescription('Confirm your password to proceed.');
+        SEOTools::opengraph()->setUrl(route('password.confirm'));
+        SEOTools::setCanonical(route('password.confirm'));
+
+        return view('auth.passwords.confirm');
     }
 }

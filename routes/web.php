@@ -13,7 +13,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ConfirmPasswordController;
 
 
-Route::get('/', [WelcomeController::class, 'index']);
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 // Authentication Routes...
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');

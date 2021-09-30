@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Artesaos\SEOTools\Facades\SEOTools;
+use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Http\Request;
 
 class ResetPasswordController extends Controller
 {
@@ -26,4 +29,18 @@ class ResetPasswordController extends Controller
      * @var string
      */
     protected $redirectTo = '/home';
+
+    public function showResetForm(Request $request): View
+    {
+        SEOTools::setTitle('Reset Password - ' . config('app.name'));
+        SEOTools::setDescription('Reset your password to regain access to your URL-Pusher account.');
+        SEOTools::opengraph()->setUrl(route('password.request'));
+        SEOTools::setCanonical(route('password.request'));
+
+        $token = $request->route()->parameter('token');
+
+        return view('auth.passwords.reset')->with(
+            ['token' => $token, 'email' => $request->email]
+        );
+    }
 }

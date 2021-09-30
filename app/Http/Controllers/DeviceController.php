@@ -6,6 +6,7 @@ use App\Device;
 use App\Http\Requests\DeviceDeleteRequest;
 use App\Http\Requests\DeviceStoreRequest;
 use App\Http\Requests\DeviceUpdateRequest;
+use Artesaos\SEOTools\Facades\SEOTools;
 use Illuminate\Http\Request;
 
 class DeviceController extends Controller
@@ -17,6 +18,9 @@ class DeviceController extends Controller
      */
     public function index(Request $request)
     {
+        SEOTools::setTitle('Devices  - ' . config('app.name'));
+        SEOTools::setDescription('Manage your devices.');
+
         return view('devices.index', [
             'devices' => $request->user()->devices
         ]);
@@ -29,6 +33,9 @@ class DeviceController extends Controller
      */
     public function create()
     {
+        SEOTools::setTitle('Create Device  - ' . config('app.name'));
+        SEOTools::setDescription('Add a new device device.');
+
         return view('devices.create', [
             'device' => new Device
         ]);
@@ -55,6 +62,9 @@ class DeviceController extends Controller
      */
     public function edit(Device $device)
     {
+        SEOTools::setTitle('Edit Device  - ' . config('app.name'));
+        SEOTools::setDescription('Edit your device.');
+
         return view('devices.edit', [
             'device' => $device
         ]);
