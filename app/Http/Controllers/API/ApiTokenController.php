@@ -12,6 +12,11 @@ class ApiTokenController extends Controller
 {
     public function store(Request $request): JsonResponse
     {
+        $request->validate([
+            'id' => 'required',
+            'token' => 'required'
+        ]);
+
         Log::info('input', $request->all());
 
         Device::where('user_id', $request->user()->id)
@@ -27,6 +32,10 @@ class ApiTokenController extends Controller
 
     public function destroy(Request $request): JsonResponse
     {
+        $request->validate([
+            'token' => 'required'
+        ]);
+
         Log::info('input', $request->all());
 
         Device::where('device_token', $request->input('token'))

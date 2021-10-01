@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UrlStoreRequest;
 use App\Url;
 use Embed\Embed;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class ApiUrlController extends Controller
@@ -23,8 +24,10 @@ class ApiUrlController extends Controller
         return response("", 201);
     }
 
-    public function destroy(Url $url): Response
+    public function destroy(Request $request, Url $url): Response
     {
+        abort_unless($url->user_id == $request->user()->id, 401);
+
         $url->delete();
 
         return response()->noContent();

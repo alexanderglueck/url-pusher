@@ -17,13 +17,13 @@ use App\Http\Controllers\API\ApiUrlController;
 |
 */
 
-Route::post('/session', [ApiLoginController::class, 'login']);
+Route::post('/session', [ApiLoginController::class, 'login'])->name('api.login');
 
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::post('/remove-token', [ApiTokenController::class, 'destroy']);
-    Route::post('/attach-token', [ApiTokenController::class, 'store']);
-    Route::get('/devices', [ApiDeviceController::class, 'index']);
-    Route::post('/urls', [ApiUrlController::class, 'store']);
-    Route::delete('/urls/{url}', [ApiUrlController::class, 'destroy']);
+    Route::post('/remove-token', [ApiTokenController::class, 'destroy'])->name('api.token.destroy');
+    Route::post('/attach-token', [ApiTokenController::class, 'store'])->name('api.token.store');
+    Route::get('/devices', [ApiDeviceController::class, 'index'])->name('api.devices.index');
+    Route::post('/urls', [ApiUrlController::class, 'store'])->name('api.url.store');
+    Route::delete('/urls/{url}', [ApiUrlController::class, 'destroy'])->name('api.url.destroy');
 });
 
