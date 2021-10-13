@@ -58,14 +58,35 @@
                         <ul class="list-group list-group-flush">
                             @foreach($urls as $url)
                                 <li class="list-group-item">
-                                    <span class="d-flex flex-column">
-                                         <a class="flex-fill" href="{{ $url->url }}" target="_blank" rel="noopener noreferrer">
-                                            {{ $url->title }}
-                                        </a>
-                                        <a class="text-body" href="{{ $url->url }}" target="_blank" rel="noopener noreferrer">
-                                            <small class="">{{ $url->url }}</small>
-                                        </a>
-                                    </span>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="flex-fill ">
+                                            <div>
+                                                <a class="" href="{{ $url->url }}" target="_blank"
+                                                   rel="noopener noreferrer">
+                                                    {{ $url->title }}
+                                                </a>
+                                            </div>
+                                            <div>
+                                                <a class="text-body" href="{{ $url->url }}" target="_blank"
+                                                   rel="noopener noreferrer">
+                                                    <small class="">{{ $url->url }}</small>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            <button type="button" class="btn btn-sm" data-toggle="dropdown"
+                                                    aria-haspopup="true" aria-expanded="false">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                     fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                                                </svg>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <button class="dropdown-item copy-to-clipboard" data-clipboard="{{ $url->url }}" type="button">Copy link</button>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     <div class="d-flex justify-content-between align-items-center">
 
@@ -73,21 +94,25 @@
                                             {{ $url->device->name }}
 
                                             @if($url->device->device_token)
-                                                <a class="push-again-link" href="#" data-url="{{ $url->url }}" data-device="{{ $url->device->id }}">
+                                                <a class="push-again-link" href="#" data-url="{{ $url->url }}"
+                                                   data-device="{{ $url->device->id }}">
                                                     Push again
                                                 </a>
                                             @endif
                                         </small>
 
                                         <div>
-                                            <form action="{{ route('urls.destroy', $url) }}" method="post" class="confirm-delete d-inline">
+                                            <small>{{ $url->created_at->diffForHumans() }}</small>
+                                            <form action="{{ route('urls.destroy', $url) }}" method="post"
+                                                  class="confirm-delete d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <small>
-                                                    <button class="btn btn-link p-0 m-0" style="font-size: 100%;vertical-align: inherit">Delete</button>
+                                                    <button class="btn btn-link p-0 m-0"
+                                                            style="font-size: 100%;vertical-align: inherit">Delete
+                                                    </button>
                                                 </small>
                                             </form>
-                                            <small>{{ $url->created_at->diffForHumans() }}</small>
                                         </div>
                                     </div>
                                 </li>

@@ -32,4 +32,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
             })
         }
     }
+
+    const copyToClipboardButtons = document.querySelectorAll(".copy-to-clipboard");
+    if (copyToClipboardButtons.length > 0) {
+        for (const copyToClipboardButton of copyToClipboardButtons) {
+            copyToClipboardButton.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                const el = document.createElement('textarea');
+                el.value = this.dataset.clipboard;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+            });
+        }
+    }
 });
