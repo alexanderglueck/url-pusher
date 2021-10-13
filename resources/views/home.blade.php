@@ -84,36 +84,33 @@
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-right">
                                                 <button class="dropdown-item copy-to-clipboard" data-clipboard="{{ $url->url }}" type="button">Copy link</button>
+
+                                                @if($url->device->device_token)
+                                                    <a class="dropdown-item push-again-link" href="#" type="button" data-url="{{ $url->url }}"
+                                                       data-device="{{ $url->device->id }}"
+                                                    >Push again
+                                                    </a>
+                                                @endif
+
+                                                <form action="{{ route('urls.destroy', $url) }}" method="post"
+                                                      class="confirm-delete">
+                                                    @csrf
+                                                    @method('DELETE')
+
+                                                    <button class="dropdown-item"
+                                                            style="font-size: 100%;vertical-align: inherit">Delete
+                                                    </button>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="d-flex justify-content-between align-items-center">
-
                                         <small class="">
                                             {{ $url->device->name }}
-
-                                            @if($url->device->device_token)
-                                                <a class="push-again-link" href="#" data-url="{{ $url->url }}"
-                                                   data-device="{{ $url->device->id }}">
-                                                    Push again
-                                                </a>
-                                            @endif
                                         </small>
 
-                                        <div>
-                                            <small>{{ $url->created_at->diffForHumans() }}</small>
-                                            <form action="{{ route('urls.destroy', $url) }}" method="post"
-                                                  class="confirm-delete d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <small>
-                                                    <button class="btn btn-link p-0 m-0"
-                                                            style="font-size: 100%;vertical-align: inherit">Delete
-                                                    </button>
-                                                </small>
-                                            </form>
-                                        </div>
+                                        <small>{{ $url->created_at->diffForHumans() }}</small>
                                     </div>
                                 </li>
                             @endforeach
