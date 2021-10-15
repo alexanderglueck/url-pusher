@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Device;
+use App\Models\Device;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DeviceFactory extends Factory

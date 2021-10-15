@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Url;
+use App\Models\Url;
 use Embed\Embed;
 use Illuminate\Http\RedirectResponse;
 use LaravelFCM\Facades\FCM;

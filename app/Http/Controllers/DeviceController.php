@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Device;
+use App\Models\Device;
 use App\Http\Requests\DeviceDeleteRequest;
 use App\Http\Requests\DeviceStoreRequest;
 use App\Http\Requests\DeviceUpdateRequest;

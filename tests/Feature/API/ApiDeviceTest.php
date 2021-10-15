@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\API;
 
-use App\Device;
-use App\User;
+use App\Models\Device;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

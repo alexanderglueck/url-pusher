@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Url;
+use App\Models\Url;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class UrlFactory extends Factory

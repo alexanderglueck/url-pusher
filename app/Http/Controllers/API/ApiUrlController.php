@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UrlStoreRequest;
-use App\Url;
+use App\Models\Url;
 use Embed\Embed;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
