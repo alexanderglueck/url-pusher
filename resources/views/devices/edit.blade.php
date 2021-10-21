@@ -49,7 +49,7 @@
                             {{ __('Once this device is deleted, you can no longer push to it until you create it again.') }}
                         </div>
 
-                        <form action="{{ route('devices.destroy', $device) }}" method="post">
+                        <form action="{{ route('devices.destroy', $device) }}" method="post" class="confirm-delete">
                             @method('DELETE')
                             @csrf
                         <div class="mt-5">
