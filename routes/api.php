@@ -1,11 +1,11 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ApiLoginController;
 use App\Http\Controllers\API\ApiTokenController;
 use App\Http\Controllers\API\ApiDeviceController;
 use App\Http\Controllers\API\ApiUrlController;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,6 +17,10 @@ use App\Http\Controllers\API\ApiUrlController;
 |
 */
 
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
 Route::post('/session', [ApiLoginController::class, 'login'])->name('api.login');
 
 Route::group(['middleware' => 'auth:api'], function () {
@@ -26,4 +30,3 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/urls', [ApiUrlController::class, 'store'])->name('api.url.store');
     Route::delete('/urls/{url}', [ApiUrlController::class, 'destroy'])->name('api.url.destroy');
 });
-

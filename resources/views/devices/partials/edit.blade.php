@@ -1,20 +1,8 @@
 @csrf
 
-<div class="form-group">
-    <label for="name">Device name</label>
-    <input type="text"
-           class="form-control @error('name') is-invalid @enderror"
-           id="name"
-           placeholder="My phone"
-           name="name"
-           value="{{ old('name', $device->name) }}"
-           required
-           autofocus
-    >
-    @error('name')
-    <span class="invalid-feedback" role="alert">
-        <strong>{{ $message }}</strong>
-    </span>
-    @enderror
+<!-- Name -->
+<div class="col-span-6 sm:col-span-4">
+    <x-jet-label for="name" value="{{ __('Device name') }}" />
+    <x-jet-input id="name" class="block mt-1 w-full" placeholder="My phone" type="text" name="name" :value="old('name', $device->name)" required autofocus />
+    <x-jet-input-error for="name" class="mt-2" />
 </div>
-
