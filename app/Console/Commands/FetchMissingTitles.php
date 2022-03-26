@@ -27,7 +27,8 @@ class FetchMissingTitles extends Command
         DB::table('urls')->select('id', 'url')->whereNull('title')->chunkById(100, function ($urls) {
             foreach ($urls as $url) {
 
-                $info = Embed::create($url->url);
+                $embed = new Embed();
+                $info = $embed->get($url->url);
 
                 DB::table('urls')
                     ->where('id', $url->id)

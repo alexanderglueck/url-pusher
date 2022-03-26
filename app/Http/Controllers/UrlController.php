@@ -66,7 +66,8 @@ class UrlController extends Controller
 
     private function getMetaData(Url $url): void
     {
-        $info = Embed::create($url->url);
+        $embed = new Embed();
+        $info = $embed->get($url->url);
 
         $url->title = $info->title ?: $url->url;
         $url->save();

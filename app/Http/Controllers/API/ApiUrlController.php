@@ -16,7 +16,8 @@ class ApiUrlController extends Controller
         $url = new Url($request->validated());
         $url->device_id = $request->input('device_id');
 
-        $info = Embed::create($url->url);
+        $embed = new Embed();
+        $info = $embed->get($url->url);
         $url->title = $info->title ?: $url->url;
 
         $request->user()->urls()->save($url);
