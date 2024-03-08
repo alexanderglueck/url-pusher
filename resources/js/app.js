@@ -1,10 +1,4 @@
-require('./bootstrap');
-
-import Alpine from 'alpinejs';
-
-window.Alpine = Alpine;
-
-Alpine.start();
+import './bootstrap';
 
 document.addEventListener('DOMContentLoaded', (event) => {
     const pushForm = document.getElementById('push-form');
