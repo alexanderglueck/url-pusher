@@ -15,14 +15,14 @@
 
                             <!-- Name -->
                             <div class="col-span-6 sm:col-span-4">
-                                <x-jet-label for="url" value="{{ __('URL') }}"/>
-                                <x-jet-input id="url" class="block mt-1 w-full" maxlength="500"
+                                <x-label for="url" value="{{ __('URL') }}"/>
+                                <x-input id="url" class="block mt-1 w-full" maxlength="500"
                                              placeholder="https://www.google.com" type="url" name="url"
                                              :value="old('url')" required/>
-                                <x-jet-input-error for="url" class="mt-2"/>
+                                <x-input-error for="url" class="mt-2"/>
                             </div>
                             <div class="col-span-2 sm:col-span-2">
-                                <x-jet-label for="device_id" value="{{ __('Device') }}"/>
+                                <x-label for="device_id" value="{{ __('Device') }}"/>
                                 <select name="device_id" id="device_id"
                                         class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         aria-label="Device">
@@ -30,7 +30,7 @@
                                         <option value="{{ $device->id }}">{{ $device->name }}</option>
                                     @endforeach
                                 </select>
-                                <x-jet-input-error for="device_id" class="mt-2"/>
+                                <x-input-error for="device_id" class="mt-2"/>
                             </div>
 
                         </div>
@@ -38,9 +38,9 @@
 
                     <div
                         class="flex items-center justify-end px-4 py-3 bg-gray-50 text-right sm:px-6 shadow sm:rounded-bl-md sm:rounded-br-md">
-                        <x-jet-button type="submit">
+                        <x-button type="submit">
                             {{ __('Push') }}
-                        </x-jet-button>
+                        </x-button>
                     </div>
                 </form>
 
@@ -65,7 +65,7 @@
                                         </div>
                                     </div>
                                     <div class="">
-                                        <x-jet-dropdown align="right" width="48">
+                                        <x-dropdown align="right" width="48">
                                             <x-slot name="trigger">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                      fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
@@ -80,11 +80,11 @@
                                                 </button>
 
                                                 @if($url->device->device_token)
-                                                    <x-jet-dropdown-link class="push-again-link" href="#"
+                                                    <x-dropdown-link class="push-again-link" href="#"
                                                        data-url="{{ $url->url }}"
                                                        data-device="{{ $url->device->id }}"
                                                     >Push again
-                                                    </x-jet-dropdown-link>
+                                                    </x-dropdown-link>
                                                 @endif
 
 
@@ -97,7 +97,7 @@
                                                 </form>
 
                                             </x-slot>
-                                        </x-jet-dropdown>
+                                        </x-dropdown>
                                     </div>
                                 </div>
 

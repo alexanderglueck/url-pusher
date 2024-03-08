@@ -8,10 +8,10 @@
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
     <div class='md:grid md:grid-cols-3 md:gap-6'>
-        <x-jet-section-title>
+        <x-section-title>
             <x-slot name="title">{{ __('Device name') }}</x-slot>
             <x-slot name="description">{{ __('The device name helps you recognize your device among the list of your devices.') }}</x-slot>
-        </x-jet-section-title>
+        </x-section-title>
 
         <div class="mt-5 md:mt-0 md:col-span-2">
             <form action="{{ route('devices.update', $device) }}" method="post">
@@ -24,22 +24,22 @@
 
 
                 <div class="flex items-center justify-end px-4 py-3 bg-gray-50 text-right sm:px-6 shadow sm:rounded-bl-md sm:rounded-br-md">
-                    <x-jet-button>
+                    <x-button>
                         {{ __('Edit') }}
-                    </x-jet-button>
+                    </x-button>
                 </div>
 
             </form>
         </div>
     </div>
 
-            <x-jet-section-border />
+            <x-section-border />
 
             <div class='md:grid md:grid-cols-3 md:gap-6'>
-                <x-jet-section-title>
+                <x-section-title>
                     <x-slot name="title">{{ __('Delete device') }}</x-slot>
                     <x-slot name="description">{{ __('Permanently delete device.') }}</x-slot>
-                </x-jet-section-title>
+                </x-section-title>
 
                 <div class="mt-5 md:mt-0 md:col-span-2">
                     <div class="px-4 py-5 sm:p-6 bg-white shadow sm:rounded-lg">
@@ -53,9 +53,9 @@
                             @method('DELETE')
                             @csrf
                         <div class="mt-5">
-                            <x-jet-danger-button type="submit">
+                            <x-danger-button type="submit">
                                 {{ __('Delete device') }}
-                            </x-jet-danger-button>
+                            </x-danger-button>
                         </div>
                         </form>
 
