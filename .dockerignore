@@ -5,7 +5,8 @@ storage/framework/sessions/*
 storage/framework/views/*
 storage/logs/*
 
-node_modules
+node_modules/
+vendor/
 .docker
 Dockerfile
 Dockerfile.dist

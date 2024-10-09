@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Url;
 use Embed\Embed;
 use Illuminate\Http\RedirectResponse;
-use LaravelFCM\Facades\FCM;
+use Kreait\Firebase\Exception\FirebaseException;
+use Kreait\Firebase\Exception\InvalidArgumentException;
+use Kreait\Firebase\Exception\MessagingException;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Laravel\Firebase\Facades\Firebase;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\UrlStoreRequest;
-use LaravelFCM\Message\OptionsBuilder;
-use LaravelFCM\Message\PayloadDataBuilder;
 
 class UrlController extends Controller
 {
@@ -38,30 +40,27 @@ class UrlController extends Controller
 
     private function sendToDevice(Url $url): void
     {
-        $optionBuilder = new OptionsBuilder();
-        $optionBuilder->setTimeToLive(60 * 20);
+        $messaging = Firebase::messaging();
 
-        $dataBuilder = new PayloadDataBuilder();
-        $dataBuilder->addData([
-            'title' => $url->title,
-            'url' => $url->url,
-            'user_id' => $url->user_id
-        ]);
+        $message = CloudMessage::withTarget('token', $url->device->device_token)
+            ->withData([
+                'title' => $url->title,
+                'url' => $url->url,
+                'user_id' => $url->user_id
+            ]);
 
-        $option = $optionBuilder->build();
-        $data = $dataBuilder->build();
+        try {
+            $result = $messaging->send($message);
 
-        $downstreamResponse = FCM::sendTo($url->device->device_token, $option, null, $data);
-
-        Log::debug('Push response', [
-            'numSuccess' => $downstreamResponse->numberSuccess(),
-            'numFailure' => $downstreamResponse->numberFailure(),
-            'numModification' => $downstreamResponse->numberModification(),
-            'delete' => $downstreamResponse->tokensToDelete(),
-            'modify' => $downstreamResponse->tokensToModify(),
-            'retry' => $downstreamResponse->tokensToRetry(),
-            'error' => $downstreamResponse->tokensWithError()
-        ]);
+            Log::debug('Push response', [
+                $result
+            ]);
+        } catch (MessagingException|FirebaseException|InvalidArgumentException $e) {
+            Log::debug('Push response', [
+                'errors' => $e->errors(),
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 
     private function getMetaData(Url $url): void
