@@ -45,9 +45,9 @@ class UrlController extends Controller
         $message = CloudMessage::new()
             ->withToken($url->device->device_token)
             ->withData([
-                'title' => $url->title,
-                'url' => $url->url,
-                'user_id' => $url->user_id
+                'title' => (string) $url->title,
+                'url' => (string) $url->url,
+                'user_id' => (string) $url->user_id,
             ]);
 
         try {
