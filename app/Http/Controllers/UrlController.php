@@ -42,7 +42,8 @@ class UrlController extends Controller
     {
         $messaging = Firebase::messaging();
 
-        $message = CloudMessage::withTarget('token', $url->device->device_token)
+        $message = CloudMessage::new()
+            ->withToken($url->device->device_token)
             ->withData([
                 'title' => $url->title,
                 'url' => $url->url,
