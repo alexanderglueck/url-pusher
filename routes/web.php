@@ -1,24 +1,24 @@
 <?php
 
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UrlController;
+use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('dashboard', [HomeController::class, 'index'])->name('dashboard');
+
+    Route::resource('devices', DeviceController::class)->except([
+        'show',
+    ]);
+
+    Route::resource('urls', UrlController::class)->only([
+        'store',
+        'destroy',
     ]);
 });
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-});
+Route::redirect('/.well-known/change-password', '/user/profile');

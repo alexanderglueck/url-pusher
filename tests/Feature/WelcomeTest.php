@@ -1,0 +1,29 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
+use Tests\TestCase;
+
+class WelcomeTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_guests_see_the_welcome_page(): void
+    {
+        $this->get(route('welcome'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->component('Welcome'));
+    }
+
+    public function test_authenticated_users_are_redirected_to_the_dashboard(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get(route('welcome'))
+            ->assertRedirect(route('dashboard'));
+    }
+}

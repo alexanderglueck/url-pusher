@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Url;
 use Embed\Embed;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Kreait\Firebase\Exception\FirebaseException;
 use Kreait\Firebase\Exception\InvalidArgumentException;
 use Kreait\Firebase\Exception\MessagingException;
@@ -31,11 +32,13 @@ class UrlController extends Controller
         return redirect()->back();
     }
 
-    public function destroy(Url $url): RedirectResponse
+    public function destroy(Request $request, Url $url): RedirectResponse
     {
+        abort_unless($url->user_id === $request->user()->id, 403);
+
         $url->delete();
 
-        return redirect()->route('home');
+        return redirect()->route('dashboard');
     }
 
     private function sendToDevice(Url $url): void

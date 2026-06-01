@@ -2,35 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Device;
 use App\Http\Requests\DeviceDeleteRequest;
 use App\Http\Requests\DeviceStoreRequest;
 use App\Http\Requests\DeviceUpdateRequest;
-use Artesaos\SEOTools\Facades\SEOTools;
-use Illuminate\Contracts\View\View;
+use App\Models\Device;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class DeviceController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): Response
     {
-        SEOTools::setTitle('Devices  - ' . config('app.name'));
-        SEOTools::setDescription('Manage your devices.');
-
-        return view('devices.index', [
-            'devices' => $request->user()->devices
+        return Inertia::render('Devices/Index', [
+            'devices' => $request->user()->devices()->get()
+                ->map(fn (Device $device) => [
+                    'id' => $device->id,
+                    'name' => $device->name,
+                    'can_push' => (bool) $device->device_token,
+                ]),
         ]);
     }
 
-    public function create(): View
+    public function create(): Response
     {
-        SEOTools::setTitle('Create Device  - ' . config('app.name'));
-        SEOTools::setDescription('Add a new device device.');
-
-        return view('devices.create', [
-            'device' => new Device
-        ]);
+        return Inertia::render('Devices/Create');
     }
 
     public function store(DeviceStoreRequest $request): RedirectResponse
@@ -40,13 +37,13 @@ class DeviceController extends Controller
         return redirect()->route('devices.index');
     }
 
-    public function edit(Device $device): View
+    public function edit(Device $device): Response
     {
-        SEOTools::setTitle('Edit Device  - ' . config('app.name'));
-        SEOTools::setDescription('Edit your device.');
-
-        return view('devices.edit', [
-            'device' => $device
+        return Inertia::render('Devices/Edit', [
+            'device' => [
+                'id' => $device->id,
+                'name' => $device->name,
+            ],
         ]);
     }
 
