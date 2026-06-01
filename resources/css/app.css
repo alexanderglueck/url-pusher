@@ -1,9 +1,6 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 
-@source '../views';
-@source '../../vendor/laravel/jetstream/**/*.blade.php';
-
 /*
  | Tailwind v4 defaults `border-*` and `divide-*` to `currentColor` instead of
  | the v3 `gray-200`. The published Jetstream components were written for v3,
