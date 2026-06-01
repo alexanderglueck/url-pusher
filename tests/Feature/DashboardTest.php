@@ -33,4 +33,27 @@ class DashboardTest extends TestCase
                 ->has('urls', 0)
             );
     }
+
+    public function test_devices_are_listed_newest_first(): void
+    {
+        $user = User::factory()->create();
+
+        $older = Device::factory()->create([
+            'user_id' => $user->id,
+            'device_token' => 'token',
+            'created_at' => now()->subDay(),
+        ]);
+        $newer = Device::factory()->create([
+            'user_id' => $user->id,
+            'device_token' => 'token',
+            'created_at' => now(),
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('dashboard'))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('devices.0.id', $newer->id)
+                ->where('devices.1.id', $older->id)
+            );
+    }
 }

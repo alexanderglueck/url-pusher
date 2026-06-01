@@ -11,7 +11,7 @@ class HomeController extends Controller
 {
     public function index(Request $request): Response
     {
-        $devices = $request->user()->devices()->withDeviceToken()->get()
+        $devices = $request->user()->devices()->withDeviceToken()->latest()->get()
             ->map(fn ($device) => [
                 'id' => $device->id,
                 'name' => $device->name,
