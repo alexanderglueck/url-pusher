@@ -2,32 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Urls\SendUrlToDevice;
+use App\Actions\Urls\StoreUrl;
+use App\Http\Requests\UrlStoreRequest;
 use App\Models\Url;
-use Embed\Embed;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Kreait\Firebase\Exception\FirebaseException;
-use Kreait\Firebase\Exception\InvalidArgumentException;
-use Kreait\Firebase\Exception\MessagingException;
-use Kreait\Firebase\Messaging\CloudMessage;
-use Kreait\Laravel\Firebase\Facades\Firebase;
-use Illuminate\Support\Facades\Log;
-use App\Http\Requests\UrlStoreRequest;
 
 class UrlController extends Controller
 {
-    public function store(UrlStoreRequest $request): RedirectResponse
+    public function store(UrlStoreRequest $request, StoreUrl $storeUrl, SendUrlToDevice $sendUrlToDevice): RedirectResponse
     {
-        $url = new Url($request->validated());
-        $url->device_id = $request->input('device_id');
+        $url = $storeUrl->handle($request->user(), $request->validated());
 
-        $request->user()->urls()->save($url);
-
-        // Grab title
-        $this->getMetaData($url);
-
-        // Send the notification to the device
-        $this->sendToDevice($url);
+        $sendUrlToDevice->handle($url);
 
         return redirect()->back();
     }
@@ -39,40 +27,5 @@ class UrlController extends Controller
         $url->delete();
 
         return redirect()->route('dashboard');
-    }
-
-    private function sendToDevice(Url $url): void
-    {
-        $messaging = Firebase::messaging();
-
-        $message = CloudMessage::new()
-            ->withToken($url->device->device_token)
-            ->withData([
-                'title' => (string) $url->title,
-                'url' => (string) $url->url,
-                'user_id' => (string) $url->user_id,
-            ]);
-
-        try {
-            $result = $messaging->send($message);
-
-            Log::debug('Push response', [
-                $result
-            ]);
-        } catch (MessagingException|FirebaseException|InvalidArgumentException $e) {
-            Log::debug('Push response', [
-                'errors' => $e->errors(),
-                'message' => $e->getMessage()
-            ]);
-        }
-    }
-
-    private function getMetaData(Url $url): void
-    {
-        $embed = new Embed();
-        $info = $embed->get($url->url);
-
-        $url->title = $info->title ?: $url->url;
-        $url->save();
     }
 }

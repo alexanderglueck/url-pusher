@@ -8,6 +8,7 @@
         "php": "^8.4",
         "ext-pdo": "*",
         "artesaos/seotools": "^1.4",
+        "dedoc/scramble": "^0.13.24",
         "embed/embed": "^4.4.3",
         "inertiajs/inertia-laravel": "^2.0",
         "kreait/laravel-firebase": "^7.0",

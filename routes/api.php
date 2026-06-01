@@ -1,32 +1,36 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\DeviceController;
+use App\Http\Controllers\Api\V1\UrlController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\ApiLoginController;
-use App\Http\Controllers\API\ApiTokenController;
-use App\Http\Controllers\API\ApiDeviceController;
-use App\Http\Controllers\API\ApiUrlController;
+
 /*
 |--------------------------------------------------------------------------
-| API Routes
+| API v1
 |--------------------------------------------------------------------------
 |
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
+| The mobile API. It is authenticated with Laravel Sanctum personal access
+| tokens and shares its domain logic (storing URLs, pushing to devices)
+| with the web application through the App\Actions\Urls action classes.
+|
+| A future v2 would be a copy of this block under its own namespace so the
+| v1 contract the mobile app depends on stays frozen.
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::prefix('v1')->name('api.v1.')->group(function () {
+    Route::post('auth/login', [AuthController::class, 'login'])->name('auth.login');
 
-Route::post('/session', [ApiLoginController::class, 'login'])->name('api.login');
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
+        Route::get('auth/me', [AuthController::class, 'me'])->name('auth.me');
 
-Route::group(['middleware' => 'auth:api'], function () {
-    Route::post('/remove-token', [ApiTokenController::class, 'destroy'])->name('api.token.destroy');
-    Route::post('/attach-token', [ApiTokenController::class, 'store'])->name('api.token.store');
-    Route::get('/devices', [ApiDeviceController::class, 'index'])->name('api.devices.index');
-    Route::post('/urls', [ApiUrlController::class, 'store'])->name('api.url.store');
-    Route::delete('/urls/{url}', [ApiUrlController::class, 'destroy'])->name('api.url.destroy');
+        Route::get('devices', [DeviceController::class, 'index'])->name('devices.index');
+        Route::post('devices/{device}/token', [DeviceController::class, 'attachToken'])->name('devices.token.store');
+        Route::delete('devices/{device}/token', [DeviceController::class, 'detachToken'])->name('devices.token.destroy');
+
+        Route::post('urls', [UrlController::class, 'store'])->name('urls.store');
+        Route::delete('urls/{url}', [UrlController::class, 'destroy'])->name('urls.destroy');
+    });
 });
