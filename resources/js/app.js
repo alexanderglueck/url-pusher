@@ -1,49 +1,23 @@
 import './bootstrap';
+import '../css/app.css';
 
-document.addEventListener('DOMContentLoaded', (event) => {
-    const pushForm = document.getElementById('push-form');
+import { createApp, h } from 'vue';
+import { createInertiaApp } from '@inertiajs/vue3';
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
-    if (pushForm) {
-        const urlInput = pushForm.querySelector('input#url');
-        const deviceSelect = pushForm.querySelector('select#device_id');
+const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
-        document.querySelectorAll('a.push-again-link').forEach((anchor) => {
-            anchor.addEventListener('click', (click) => {
-                click.preventDefault();
-
-                urlInput.value = anchor.dataset.url;
-                deviceSelect.value = anchor.dataset.device;
-                pushForm.submit();
-            })
-        })
-    }
-
-    const forms = document.querySelectorAll(".confirm-delete");
-    if (forms.length > 0) {
-        for (const form of forms) {
-            form.addEventListener("submit", function (e) {
-                e.preventDefault();
-
-                if (confirm("Are you sure you want delete this resource?")) {
-                    e.target.submit();
-                }
-            })
-        }
-    }
-
-    const copyToClipboardButtons = document.querySelectorAll(".copy-to-clipboard");
-    if (copyToClipboardButtons.length > 0) {
-        for (const copyToClipboardButton of copyToClipboardButtons) {
-            copyToClipboardButton.addEventListener("click", function (e) {
-                e.preventDefault();
-
-                const el = document.createElement('textarea');
-                el.value = this.dataset.clipboard;
-                document.body.appendChild(el);
-                el.select();
-                document.execCommand('copy');
-                document.body.removeChild(el);
-            });
-        }
-    }
+createInertiaApp({
+    title: (title) => `${title} - ${appName}`,
+    resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
+    setup({ el, App, props, plugin }) {
+        return createApp({ render: () => h(App, props) })
+            .use(plugin)
+            .use(ZiggyVue)
+            .mount(el);
+    },
+    progress: {
+        color: '#4B5563',
+    },
 });
