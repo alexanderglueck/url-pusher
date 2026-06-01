@@ -18,7 +18,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         'show',
     ]);
 
+    Route::get('urls/trash', [UrlController::class, 'trash'])->name('urls.trash');
     Route::post('urls/push-all', [UrlController::class, 'pushAll'])->name('urls.push-all');
+    Route::patch('urls/{id}/restore', [UrlController::class, 'restore'])->name('urls.restore');
+    Route::delete('urls/{id}/force', [UrlController::class, 'forceDelete'])->name('urls.force-delete');
     Route::patch('urls/{url}', [UrlController::class, 'update'])->name('urls.update');
     Route::post('urls/{url}/favorite', [UrlController::class, 'favorite'])->name('urls.favorite');
 

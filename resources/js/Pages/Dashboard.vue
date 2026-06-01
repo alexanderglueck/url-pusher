@@ -209,6 +209,10 @@ const destroy = (url) => {
                                 >
                                 Favorites only
                             </label>
+
+                            <Link :href="route('urls.trash')" class="sm:ms-auto text-sm text-gray-500 hover:text-gray-700">
+                                Trash
+                            </Link>
                         </div>
 
                         <div v-if="urls.length" class="bg-white overflow-hidden shadow sm:rounded-md mt-4">

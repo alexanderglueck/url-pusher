@@ -8,9 +8,40 @@ use App\Http\Requests\UrlStoreRequest;
 use App\Models\Url;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class UrlController extends Controller
 {
+    public function trash(Request $request): Response
+    {
+        $urls = $request->user()->urls()->onlyTrashed()->with('device')->latest('deleted_at')->get()
+            ->map(fn (Url $url) => [
+                'id' => $url->id,
+                'url' => $url->url,
+                'title' => $url->title,
+                'image' => $url->image,
+                'deleted_at_human' => $url->deleted_at->diffForHumans(),
+                'device' => ['name' => $url->device?->name],
+            ]);
+
+        return Inertia::render('Urls/Trash', ['urls' => $urls]);
+    }
+
+    public function restore(Request $request, int $id): RedirectResponse
+    {
+        $request->user()->urls()->onlyTrashed()->findOrFail($id)->restore();
+
+        return back();
+    }
+
+    public function forceDelete(Request $request, int $id): RedirectResponse
+    {
+        $request->user()->urls()->onlyTrashed()->findOrFail($id)->forceDelete();
+
+        return back();
+    }
+
     public function store(UrlStoreRequest $request, StoreUrl $storeUrl, SendUrlToDevice $sendUrlToDevice): RedirectResponse
     {
         $url = $storeUrl->handle($request->user(), $request->validated());
