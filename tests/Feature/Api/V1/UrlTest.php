@@ -15,6 +15,35 @@ class UrlTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_a_user_can_list_their_recent_pushes_newest_first(): void
+    {
+        $user = User::factory()->create();
+        $device = Device::factory()->create(['user_id' => $user->id]);
+
+        $first = Url::factory()->create(['user_id' => $user->id, 'device_id' => $device->id]);
+        $latest = Url::factory()->create(['user_id' => $user->id, 'device_id' => $device->id]);
+
+        // Another user's push must not leak in.
+        $other = User::factory()->create();
+        Url::factory()->create([
+            'user_id' => $other->id,
+            'device_id' => Device::factory()->create(['user_id' => $other->id])->id,
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $this->getJson(route('api.v1.urls.index'))
+            ->assertOk()
+            ->assertJsonCount(2, 'data')
+            ->assertJsonPath('data.0.id', $latest->id)
+            ->assertJsonPath('data.1.id', $first->id)
+            ->assertJsonPath('data.0.device.id', $device->id)
+            ->assertJsonStructure([
+                'data' => [['id', 'url', 'title', 'device_id', 'device' => ['id', 'name']]],
+                'meta' => ['next_cursor'],
+            ]);
+    }
+
     public function test_storing_a_url_persists_it_and_pushes_to_the_device(): void
     {
         // Avoid the real HTTP title fetch and Firebase push.

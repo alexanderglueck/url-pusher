@@ -35,6 +35,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::post('devices/{device}/token', [DeviceController::class, 'attachToken'])->name('devices.token.store');
         Route::delete('devices/{device}/token', [DeviceController::class, 'detachToken'])->name('devices.token.destroy');
 
+        Route::get('urls', [UrlController::class, 'index'])->name('urls.index');
         Route::post('urls', [UrlController::class, 'store'])->name('urls.store');
         Route::delete('urls/{url}', [UrlController::class, 'destroy'])->name('urls.destroy');
     });

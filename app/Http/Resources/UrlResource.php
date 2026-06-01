@@ -19,6 +19,7 @@ class UrlResource extends JsonResource
             'url' => $this->url,
             'title' => $this->title,
             'device_id' => $this->device_id,
+            'device' => new DeviceResource($this->whenLoaded('device')),
             'created_at' => $this->created_at,
         ];
     }

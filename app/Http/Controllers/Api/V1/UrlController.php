@@ -10,9 +10,26 @@ use App\Http\Resources\UrlResource;
 use App\Models\Url;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UrlController extends Controller
 {
+    /**
+     * List the authenticated user's most recent pushes, newest first.
+     *
+     * Cursor-paginated for infinite scrolling; pass the `cursor` query
+     * parameter from the previous response's `meta.next_cursor`.
+     */
+    public function index(Request $request): AnonymousResourceCollection
+    {
+        $urls = $request->user()->urls()
+            ->with('device')
+            ->orderByDesc('id')
+            ->cursorPaginate(20);
+
+        return UrlResource::collection($urls);
+    }
+
     /**
      * Store a URL and push it to the chosen device.
      */
