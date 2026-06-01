@@ -30,6 +30,20 @@ class DevicePairingWebTest extends TestCase
         $this->assertDatabaseHas('device_pairings', ['user_id' => $user->id, 'device_id' => null]);
     }
 
+    public function test_the_qr_payload_uses_the_mobile_url(): void
+    {
+        config(['app.mobile_url' => 'http://192.168.1.50:8088']);
+
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('devices.create'));
+
+        $payload = json_decode($response->viewData('page')['props']['pairing']['payload'], true);
+
+        $this->assertSame('http://192.168.1.50:8088/api/v1/devices/pair', $payload['pair_url']);
+        $this->assertSame('http://192.168.1.50:8088/api/v1', $payload['api_url']);
+    }
+
     public function test_pairing_status_reflects_when_a_device_is_claimed(): void
     {
         $user = User::factory()->create();

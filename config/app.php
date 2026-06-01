@@ -57,6 +57,13 @@ return [
     'asset_url' => env('ASSET_URL'),
 
     /*
+    | The base URL the mobile app uses to reach this server (e.g. the machine's
+    | LAN address or a tunnel). Used for the device-pairing QR code, which must
+    | be reachable from the phone. Defaults to APP_URL when unset.
+    */
+    'mobile_url' => env('MOBILE_URL', env('APP_URL', 'http://localhost')),
+
+    /*
     |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------

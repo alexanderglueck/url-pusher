@@ -38,7 +38,8 @@ class DeviceController extends Controller
             'pairing' => [
                 'payload' => json_encode([
                     'v' => 1,
-                    'pair_url' => route('api.v1.devices.pair'),
+                    'api_url' => rtrim(config('app.mobile_url'), '/').'/api/v1',
+                    'pair_url' => rtrim(config('app.mobile_url'), '/').'/api/v1/devices/pair',
                     'code' => $pairing->code,
                 ]),
                 'status_url' => route('devices.pairings.status', $pairing->code),
