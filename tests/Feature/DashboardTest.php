@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Device;
+use App\Models\Url;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -55,5 +56,47 @@ class DashboardTest extends TestCase
                 ->where('devices.0.id', $newer->id)
                 ->where('devices.1.id', $older->id)
             );
+    }
+
+    public function test_the_history_can_be_searched(): void
+    {
+        $user = User::factory()->create();
+        $device = Device::factory()->create(['user_id' => $user->id]);
+        Url::factory()->create(['user_id' => $user->id, 'device_id' => $device->id, 'title' => 'Apple keynote']);
+        Url::factory()->create(['user_id' => $user->id, 'device_id' => $device->id, 'title' => 'Banana bread']);
+
+        $this->actingAs($user)
+            ->get(route('dashboard', ['q' => 'Apple']))
+            ->assertInertia(fn (Assert $page) => $page
+                ->has('urls', 1)
+                ->where('urls.0.title', 'Apple keynote')
+            );
+    }
+
+    public function test_the_history_can_be_filtered_to_favorites(): void
+    {
+        $user = User::factory()->create();
+        $device = Device::factory()->create(['user_id' => $user->id]);
+        Url::factory()->create(['user_id' => $user->id, 'device_id' => $device->id, 'is_favorite' => true]);
+        Url::factory()->create(['user_id' => $user->id, 'device_id' => $device->id, 'is_favorite' => false]);
+
+        $this->actingAs($user)
+            ->get(route('dashboard', ['favorites' => 1]))
+            ->assertInertia(fn (Assert $page) => $page->has('urls', 1));
+    }
+
+    public function test_the_history_is_capped_and_can_load_more(): void
+    {
+        $user = User::factory()->create();
+        $device = Device::factory()->create(['user_id' => $user->id]);
+        Url::factory()->count(16)->create(['user_id' => $user->id, 'device_id' => $device->id]);
+
+        $this->actingAs($user)
+            ->get(route('dashboard'))
+            ->assertInertia(fn (Assert $page) => $page->has('urls', 15)->where('canLoadMore', true));
+
+        $this->actingAs($user)
+            ->get(route('dashboard', ['limit' => 30]))
+            ->assertInertia(fn (Assert $page) => $page->has('urls', 16)->where('canLoadMore', false));
     }
 }

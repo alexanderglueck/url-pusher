@@ -1,10 +1,11 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { Link, router, useForm } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -18,7 +19,43 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
+    filters: {
+        type: Object,
+        default: () => ({ q: '', favorites: false }),
+    },
+    limit: {
+        type: Number,
+        default: 15,
+    },
+    canLoadMore: {
+        type: Boolean,
+        default: false,
+    },
 });
+
+const search = ref(props.filters.q);
+const onlyFavorites = ref(props.filters.favorites);
+
+const reload = (extra = {}) => {
+    router.get(route('dashboard'), {
+        q: search.value || undefined,
+        favorites: onlyFavorites.value ? 1 : undefined,
+        ...extra,
+    }, {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true,
+    });
+};
+
+let searchTimer = null;
+watch(search, () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => reload(), 300);
+});
+watch(onlyFavorites, () => reload());
+
+const loadMore = () => reload({ limit: props.limit + 15 });
 
 const form = useForm({
     url: '',
@@ -155,8 +192,26 @@ const destroy = (url) => {
                         </div>
                     </form>
 
-                    <!-- URL history -->
-                    <div v-if="urls.length" class="bg-white overflow-hidden shadow sm:rounded-md mt-10">
+                    <!-- Filters + URL history -->
+                    <div v-if="urls.length || filters.q || filters.favorites">
+                        <div class="mt-10 flex flex-col sm:flex-row sm:items-center gap-3">
+                            <input
+                                v-model="search"
+                                type="search"
+                                placeholder="Search links…"
+                                class="block w-full sm:w-64 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                            >
+                            <label class="inline-flex items-center gap-2 text-sm text-gray-600">
+                                <input
+                                    v-model="onlyFavorites"
+                                    type="checkbox"
+                                    class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                >
+                                Favorites only
+                            </label>
+                        </div>
+
+                        <div v-if="urls.length" class="bg-white overflow-hidden shadow sm:rounded-md mt-4">
                         <ul class="divide-y divide-gray-200">
                             <li v-for="url in urls" :key="url.id" class="px-6 py-4">
                                 <div class="flex justify-between">
@@ -259,6 +314,17 @@ const destroy = (url) => {
                                 </div>
                             </li>
                         </ul>
+                        </div>
+
+                        <div v-else class="bg-white overflow-hidden shadow sm:rounded-md mt-4 px-6 py-10 text-center text-gray-500">
+                            No links match your search.
+                        </div>
+
+                        <div v-if="canLoadMore" class="mt-4 text-center">
+                            <SecondaryButton @click="loadMore">
+                                Load more
+                            </SecondaryButton>
+                        </div>
                     </div>
                 </template>
             </div>
