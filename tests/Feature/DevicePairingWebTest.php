@@ -38,10 +38,12 @@ class DevicePairingWebTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('devices.create'));
 
-        $payload = json_decode($response->viewData('page')['props']['pairing']['payload'], true);
+        $pairing = $response->viewData('page')['props']['pairing'];
 
-        $this->assertSame('http://192.168.1.50:8088/api/v1/devices/pair', $payload['pair_url']);
-        $this->assertSame('http://192.168.1.50:8088/api/v1', $payload['api_url']);
+        $this->assertStringStartsWith(
+            'http://192.168.1.50:8088/api/v1/devices/pair?code=',
+            $pairing['payload']
+        );
     }
 
     public function test_pairing_status_reflects_when_a_device_is_claimed(): void

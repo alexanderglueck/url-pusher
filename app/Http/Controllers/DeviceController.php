@@ -34,14 +34,13 @@ class DeviceController extends Controller
             'expires_at' => now()->addMinutes(DevicePairing::TTL_MINUTES),
         ]);
 
+        $pairUrl = rtrim(config('app.mobile_url'), '/').'/api/v1/devices/pair';
+
         return Inertia::render('Devices/Create', [
             'pairing' => [
-                'payload' => json_encode([
-                    'v' => 1,
-                    'api_url' => rtrim(config('app.mobile_url'), '/').'/api/v1',
-                    'pair_url' => rtrim(config('app.mobile_url'), '/').'/api/v1/devices/pair',
-                    'code' => $pairing->code,
-                ]),
+                // A scannable URL: the app reads `code` from the query string
+                // and derives the API base from the URL's origin.
+                'payload' => $pairUrl.'?code='.urlencode($pairing->code),
                 'status_url' => route('devices.pairings.status', $pairing->code),
             ],
         ]);
