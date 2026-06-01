@@ -87,4 +87,14 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Url::class);
     }
+
+    /**
+     * The device pairing codes issued for the user.
+     *
+     * @return HasMany<DevicePairing, $this>
+     */
+    public function devicePairings(): HasMany
+    {
+        return $this->hasMany(DevicePairing::class);
+    }
 }

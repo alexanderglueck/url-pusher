@@ -6,6 +6,8 @@ use App\Http\Requests\DeviceDeleteRequest;
 use App\Http\Requests\DeviceStoreRequest;
 use App\Http\Requests\DeviceUpdateRequest;
 use App\Models\Device;
+use App\Models\DevicePairing;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -25,9 +27,32 @@ class DeviceController extends Controller
         ]);
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
-        return Inertia::render('Devices/Create');
+        $pairing = $request->user()->devicePairings()->create([
+            'code' => DevicePairing::generateCode(),
+            'expires_at' => now()->addMinutes(DevicePairing::TTL_MINUTES),
+        ]);
+
+        return Inertia::render('Devices/Create', [
+            'pairing' => [
+                'payload' => json_encode([
+                    'v' => 1,
+                    'pair_url' => route('api.v1.devices.pair'),
+                    'code' => $pairing->code,
+                ]),
+                'status_url' => route('devices.pairings.status', $pairing->code),
+            ],
+        ]);
+    }
+
+    public function pairingStatus(Request $request, string $code): JsonResponse
+    {
+        $pairing = $request->user()->devicePairings()->where('code', $code)->firstOrFail();
+
+        return response()->json([
+            'paired' => $pairing->isClaimed(),
+        ]);
     }
 
     public function store(DeviceStoreRequest $request): RedirectResponse

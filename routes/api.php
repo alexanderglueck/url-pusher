@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\DeviceController;
+use App\Http\Controllers\Api\V1\DevicePairingController;
 use App\Http\Controllers\Api\V1\UrlController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::post('auth/login', [AuthController::class, 'login'])->name('auth.login');
+
+    // Device pairing works with or without a token (see the controller).
+    Route::post('devices/pair', [DevicePairingController::class, 'pair'])->name('devices.pair');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('auth/logout', [AuthController::class, 'logout'])->name('auth.logout');

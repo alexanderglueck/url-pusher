@@ -11,6 +11,9 @@ Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('dashboard', [HomeController::class, 'index'])->name('dashboard');
 
+    Route::get('devices/pairings/{code}/status', [DeviceController::class, 'pairingStatus'])
+        ->name('devices.pairings.status');
+
     Route::resource('devices', DeviceController::class)->except([
         'show',
     ]);
