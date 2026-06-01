@@ -40,13 +40,35 @@ const push = () => {
     });
 };
 
-const pushAgain = (url) => {
+const pushTo = (url, deviceId) => {
     router.post(route('urls.store'), {
         url: url.url,
-        device_id: url.device.id,
+        device_id: deviceId,
     }, {
         preserveScroll: true,
     });
+};
+
+const pushToAll = (url) => {
+    router.post(route('urls.push-all'), { url: url.url }, {
+        preserveScroll: true,
+    });
+};
+
+const toggleFavorite = (url) => {
+    router.post(route('urls.favorite', url.id), {}, {
+        preserveScroll: true,
+    });
+};
+
+const editTitle = (url) => {
+    const title = window.prompt('Edit title', url.title);
+
+    if (title && title.trim()) {
+        router.patch(route('urls.update', url.id), { title: title.trim() }, {
+            preserveScroll: true,
+        });
+    }
 };
 
 const copy = (url) => {
@@ -153,7 +175,7 @@ const destroy = (url) => {
                                                 rel="noopener noreferrer"
                                                 class="block font-medium text-gray-900 truncate"
                                             >
-                                                {{ url.title }}
+                                                <span v-if="url.is_favorite" class="text-yellow-500">★ </span>{{ url.title }}
                                             </a>
                                             <a
                                                 :href="url.url"
@@ -188,13 +210,31 @@ const destroy = (url) => {
                                                     {{ copiedId === url.id ? 'Copied!' : 'Copy link' }}
                                                 </button>
 
-                                                <DropdownLink
-                                                    v-if="url.device.can_push"
-                                                    as="button"
-                                                    @click="pushAgain(url)"
-                                                >
-                                                    Push again
+                                                <DropdownLink as="button" @click="editTitle(url)">
+                                                    Edit title
                                                 </DropdownLink>
+
+                                                <DropdownLink as="button" @click="toggleFavorite(url)">
+                                                    {{ url.is_favorite ? 'Unfavorite' : 'Favorite' }}
+                                                </DropdownLink>
+
+                                                <div class="border-t border-gray-100 my-1" />
+                                                <div class="px-4 py-1 text-xs text-gray-400">Push to</div>
+
+                                                <DropdownLink
+                                                    v-for="d in devices"
+                                                    :key="d.id"
+                                                    as="button"
+                                                    @click="pushTo(url, d.id)"
+                                                >
+                                                    {{ d.name }}
+                                                </DropdownLink>
+
+                                                <DropdownLink v-if="devices.length > 1" as="button" @click="pushToAll(url)">
+                                                    All devices
+                                                </DropdownLink>
+
+                                                <div class="border-t border-gray-100 my-1" />
 
                                                 <DropdownLink as="button" @click="destroy(url)">
                                                     Delete

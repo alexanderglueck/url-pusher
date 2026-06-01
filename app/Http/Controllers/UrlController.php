@@ -20,6 +20,49 @@ class UrlController extends Controller
         return redirect()->back();
     }
 
+    public function update(Request $request, Url $url): RedirectResponse
+    {
+        abort_unless($url->user_id === $request->user()->id, 403);
+
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+        ]);
+
+        $url->update($validated);
+
+        return back();
+    }
+
+    public function favorite(Request $request, Url $url): RedirectResponse
+    {
+        abort_unless($url->user_id === $request->user()->id, 403);
+
+        $url->update(['is_favorite' => ! $url->is_favorite]);
+
+        return back();
+    }
+
+    /**
+     * Push a link to every device the user has linked.
+     */
+    public function pushAll(Request $request, StoreUrl $storeUrl, SendUrlToDevice $sendUrlToDevice): RedirectResponse
+    {
+        $validated = $request->validate([
+            'url' => ['required', 'url', 'max:500'],
+        ]);
+
+        $request->user()->devices()->withDeviceToken()->get()->each(function ($device) use ($request, $storeUrl, $sendUrlToDevice, $validated) {
+            $url = $storeUrl->handle($request->user(), [
+                'url' => $validated['url'],
+                'device_id' => $device->id,
+            ]);
+
+            $sendUrlToDevice->handle($url);
+        });
+
+        return back();
+    }
+
     public function destroy(Request $request, Url $url): RedirectResponse
     {
         abort_unless($url->user_id === $request->user()->id, 403);

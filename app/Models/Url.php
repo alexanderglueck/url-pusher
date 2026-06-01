@@ -20,6 +20,8 @@ class Url extends Model
 
     protected $fillable = [
         'url',
+        'title',
+        'is_favorite',
     ];
 
     protected function casts(): array

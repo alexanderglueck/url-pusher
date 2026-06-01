@@ -18,6 +18,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         'show',
     ]);
 
+    Route::post('urls/push-all', [UrlController::class, 'pushAll'])->name('urls.push-all');
+    Route::patch('urls/{url}', [UrlController::class, 'update'])->name('urls.update');
+    Route::post('urls/{url}/favorite', [UrlController::class, 'favorite'])->name('urls.favorite');
+
     Route::resource('urls', UrlController::class)->only([
         'store',
         'destroy',
