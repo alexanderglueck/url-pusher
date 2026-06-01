@@ -92,7 +92,7 @@ class UrlTest extends TestCase
 
         $this->deleteJson(route('api.v1.urls.destroy', $url))->assertNoContent();
 
-        $this->assertModelMissing($url);
+        $this->assertSoftDeleted($url);
     }
 
     public function test_a_user_cannot_delete_another_users_url(): void

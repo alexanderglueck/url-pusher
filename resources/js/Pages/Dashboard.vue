@@ -27,6 +27,12 @@ const form = useForm({
 
 const copiedId = ref(null);
 
+const pushStatus = {
+    sent: { label: 'Delivered', class: 'bg-green-100 text-green-700' },
+    failed: { label: 'Failed', class: 'bg-red-100 text-red-700' },
+    pending: { label: 'Pending', class: 'bg-gray-100 text-gray-600' },
+};
+
 const push = () => {
     form.post(route('urls.store'), {
         preserveScroll: true,
@@ -132,23 +138,35 @@ const destroy = (url) => {
                         <ul class="divide-y divide-gray-200">
                             <li v-for="url in urls" :key="url.id" class="px-6 py-4">
                                 <div class="flex justify-between">
-                                    <div class="flex-1 min-w-0">
-                                        <a
-                                            :href="url.url"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            class="block font-medium text-gray-900 truncate"
+                                    <div class="flex flex-1 min-w-0 gap-3">
+                                        <img
+                                            v-if="url.image"
+                                            :src="url.image"
+                                            alt=""
+                                            class="h-12 w-12 shrink-0 rounded object-cover bg-gray-100"
+                                            @error="(e) => (e.target.style.display = 'none')"
                                         >
-                                            {{ url.title }}
-                                        </a>
-                                        <a
-                                            :href="url.url"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            class="block text-sm text-gray-500 truncate"
-                                        >
-                                            {{ url.url }}
-                                        </a>
+                                        <div class="min-w-0">
+                                            <a
+                                                :href="url.url"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                class="block font-medium text-gray-900 truncate"
+                                            >
+                                                {{ url.title }}
+                                            </a>
+                                            <a
+                                                :href="url.url"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                class="block text-sm text-gray-500 truncate"
+                                            >
+                                                {{ url.url }}
+                                            </a>
+                                            <p v-if="url.description" class="text-sm text-gray-400 truncate">
+                                                {{ url.description }}
+                                            </p>
+                                        </div>
                                     </div>
 
                                     <div class="ms-4">
@@ -186,8 +204,17 @@ const destroy = (url) => {
                                     </div>
                                 </div>
 
-                                <div class="flex justify-between items-center mt-1 text-sm text-gray-500">
-                                    <span>{{ url.device.name }}</span>
+                                <div class="flex justify-between items-center mt-2 text-sm text-gray-500">
+                                    <span class="flex items-center gap-2">
+                                        <span>{{ url.device.name }}</span>
+                                        <span
+                                            v-if="url.push_status && pushStatus[url.push_status]"
+                                            class="px-2 py-0.5 rounded-full text-xs font-medium"
+                                            :class="pushStatus[url.push_status].class"
+                                        >
+                                            {{ pushStatus[url.push_status].label }}
+                                        </span>
+                                    </span>
                                     <span>{{ url.created_at_human }}</span>
                                 </div>
                             </li>

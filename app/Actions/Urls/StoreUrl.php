@@ -18,6 +18,7 @@ class StoreUrl
     {
         $url = new Url(['url' => $attributes['url']]);
         $url->device_id = $attributes['device_id'];
+        $url->push_status = Url::PUSH_PENDING;
 
         $user->urls()->save($url);
 

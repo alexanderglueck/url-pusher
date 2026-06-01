@@ -21,6 +21,11 @@ class SendUrlToDevice
     public function handle(Url $url): void
     {
         if (! $url->device?->device_token) {
+            $url->forceFill([
+                'push_status' => Url::PUSH_FAILED,
+                'pushed_at' => now(),
+            ])->save();
+
             return;
         }
 
@@ -36,11 +41,20 @@ class SendUrlToDevice
             $result = Firebase::messaging()->send($message);
 
             Log::debug('Push response', [$result]);
+
+            $status = Url::PUSH_SENT;
         } catch (MessagingException|FirebaseException|InvalidArgumentException $e) {
             Log::debug('Push response', [
                 'errors' => $e->errors(),
                 'message' => $e->getMessage(),
             ]);
+
+            $status = Url::PUSH_FAILED;
         }
+
+        $url->forceFill([
+            'push_status' => $status,
+            'pushed_at' => now(),
+        ])->save();
     }
 }

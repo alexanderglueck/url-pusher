@@ -22,6 +22,10 @@ class HomeController extends Controller
                 'id' => $url->id,
                 'url' => $url->url,
                 'title' => $url->title,
+                'description' => $url->description,
+                'image' => $url->image,
+                'push_status' => $url->push_status,
+                'is_favorite' => $url->is_favorite,
                 'created_at_human' => $url->created_at->diffForHumans(),
                 'device' => [
                     'id' => $url->device?->id,
