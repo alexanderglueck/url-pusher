@@ -10,6 +10,8 @@ import TextInput from '@/Components/TextInput.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import LinkThumbnail from '@/Components/LinkThumbnail.vue';
+import ConfirmModal from '@/Components/ConfirmModal.vue';
+import DialogModal from '@/Components/DialogModal.vue';
 
 const props = defineProps({
     devices: {
@@ -99,14 +101,22 @@ const toggleFavorite = (url) => {
     });
 };
 
-const editTitle = (url) => {
-    const title = window.prompt('Edit title', url.title);
+const editing = ref(null);
+const titleForm = useForm({ title: '' });
 
-    if (title && title.trim()) {
-        router.patch(route('urls.update', url.id), { title: title.trim() }, {
-            preserveScroll: true,
-        });
-    }
+const editTitle = (url) => {
+    titleForm.clearErrors();
+    titleForm.title = url.title;
+    editing.value = url;
+};
+
+const saveTitle = () => {
+    titleForm.patch(route('urls.update', editing.value.id), {
+        preserveScroll: true,
+        onSuccess: () => {
+            editing.value = null;
+        },
+    });
 };
 
 const copy = (url) => {
@@ -119,12 +129,23 @@ const copy = (url) => {
     }, 2000);
 };
 
+const deleting = ref(null);
+const deleteProcessing = ref(false);
+
 const destroy = (url) => {
-    if (window.confirm('Delete this URL?')) {
-        router.delete(route('urls.destroy', url.id), {
-            preserveScroll: true,
-        });
-    }
+    deleting.value = url;
+};
+
+const confirmDestroy = () => {
+    deleteProcessing.value = true;
+
+    router.delete(route('urls.destroy', deleting.value.id), {
+        preserveScroll: true,
+        onFinish: () => {
+            deleteProcessing.value = false;
+            deleting.value = null;
+        },
+    });
 };
 </script>
 
@@ -328,5 +349,50 @@ const destroy = (url) => {
                 </template>
             </div>
         </div>
+
+        <DialogModal :show="!! editing" @close="editing = null">
+            <template #title>
+                Edit title
+            </template>
+
+            <template #content>
+                <InputLabel for="edit-title" value="Title" />
+                <TextInput
+                    id="edit-title"
+                    v-model="titleForm.title"
+                    type="text"
+                    class="mt-1 block w-full"
+                    autofocus
+                    @keyup.enter="saveTitle"
+                />
+                <InputError :message="titleForm.errors.title" class="mt-2" />
+            </template>
+
+            <template #footer>
+                <SecondaryButton @click="editing = null">
+                    Cancel
+                </SecondaryButton>
+
+                <PrimaryButton
+                    class="ms-3"
+                    :class="{ 'opacity-25': titleForm.processing }"
+                    :disabled="titleForm.processing"
+                    @click="saveTitle"
+                >
+                    Save
+                </PrimaryButton>
+            </template>
+        </DialogModal>
+
+        <ConfirmModal
+            :show="!! deleting"
+            title="Delete link?"
+            confirm-text="Delete"
+            :processing="deleteProcessing"
+            @confirm="confirmDestroy"
+            @close="deleting = null"
+        >
+            <span class="font-medium text-gray-900">{{ deleting?.title }}</span> will be moved to the trash. You can restore it later.
+        </ConfirmModal>
     </AppLayout>
 </template>

@@ -1,8 +1,10 @@
 <script setup>
+import { ref } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
+import ConfirmModal from '@/Components/ConfirmModal.vue';
 
 defineProps({
     devices: {
@@ -11,12 +13,23 @@ defineProps({
     },
 });
 
+const deleting = ref(null);
+const processing = ref(false);
+
 const destroy = (device) => {
-    if (window.confirm('Delete this device? You can no longer push to it until you add it again.')) {
-        router.delete(route('devices.destroy', device.id), {
-            preserveScroll: true,
-        });
-    }
+    deleting.value = device;
+};
+
+const confirmDelete = () => {
+    processing.value = true;
+
+    router.delete(route('devices.destroy', deleting.value.id), {
+        preserveScroll: true,
+        onFinish: () => {
+            processing.value = false;
+            deleting.value = null;
+        },
+    });
 };
 </script>
 
@@ -86,5 +99,16 @@ const destroy = (device) => {
                 </div>
             </div>
         </div>
+
+        <ConfirmModal
+            :show="!! deleting"
+            title="Delete device?"
+            confirm-text="Delete device"
+            :processing="processing"
+            @confirm="confirmDelete"
+            @close="deleting = null"
+        >
+            You can no longer push to <span class="font-medium text-gray-900">{{ deleting?.name }}</span> until you add it again.
+        </ConfirmModal>
     </AppLayout>
 </template>

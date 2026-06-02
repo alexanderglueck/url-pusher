@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import FormSection from '@/Components/FormSection.vue';
@@ -8,6 +9,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
+import ConfirmModal from '@/Components/ConfirmModal.vue';
 
 const props = defineProps({
     device: {
@@ -26,10 +28,17 @@ const update = () => {
     });
 };
 
-const destroy = () => {
-    if (window.confirm('Delete this device? You can no longer push to it until you create it again.')) {
-        router.delete(route('devices.destroy', props.device.id));
-    }
+const confirmingDelete = ref(false);
+const deleting = ref(false);
+
+const confirmDelete = () => {
+    deleting.value = true;
+
+    router.delete(route('devices.destroy', props.device.id), {
+        onFinish: () => {
+            deleting.value = false;
+        },
+    });
 };
 </script>
 
@@ -88,7 +97,7 @@ const destroy = () => {
                         </div>
 
                         <div class="mt-5">
-                            <DangerButton @click="destroy">
+                            <DangerButton @click="confirmingDelete = true">
                                 Delete device
                             </DangerButton>
                         </div>
@@ -96,5 +105,16 @@ const destroy = () => {
                 </div>
             </div>
         </div>
+
+        <ConfirmModal
+            :show="confirmingDelete"
+            title="Delete device?"
+            confirm-text="Delete device"
+            :processing="deleting"
+            @confirm="confirmDelete"
+            @close="confirmingDelete = false"
+        >
+            You can no longer push to <span class="font-medium text-gray-900">{{ device.name }}</span> until you create it again.
+        </ConfirmModal>
     </AppLayout>
 </template>

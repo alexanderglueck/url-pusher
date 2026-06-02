@@ -1,9 +1,11 @@
 <script setup>
+import { ref } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import LinkThumbnail from '@/Components/LinkThumbnail.vue';
+import ConfirmModal from '@/Components/ConfirmModal.vue';
 
 defineProps({
     urls: {
@@ -12,14 +14,27 @@ defineProps({
     },
 });
 
+const deleting = ref(null);
+const processing = ref(false);
+
 const restore = (url) => {
     router.patch(route('urls.restore', url.id), {}, { preserveScroll: true });
 };
 
 const forceDelete = (url) => {
-    if (window.confirm('Permanently delete this link? This cannot be undone.')) {
-        router.delete(route('urls.force-delete', url.id), { preserveScroll: true });
-    }
+    deleting.value = url;
+};
+
+const confirmForceDelete = () => {
+    processing.value = true;
+
+    router.delete(route('urls.force-delete', deleting.value.id), {
+        preserveScroll: true,
+        onFinish: () => {
+            processing.value = false;
+            deleting.value = null;
+        },
+    });
 };
 </script>
 
@@ -86,5 +101,16 @@ const forceDelete = (url) => {
                 </div>
             </div>
         </div>
+
+        <ConfirmModal
+            :show="!! deleting"
+            title="Permanently delete link?"
+            confirm-text="Delete forever"
+            :processing="processing"
+            @confirm="confirmForceDelete"
+            @close="deleting = null"
+        >
+            <span class="font-medium text-gray-900">{{ deleting?.title }}</span> will be gone for good. This cannot be undone.
+        </ConfirmModal>
     </AppLayout>
 </template>
