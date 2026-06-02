@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -16,9 +15,21 @@ class WelcomeController extends Controller
             return redirect()->route('dashboard');
         }
 
-        return Inertia::render('Welcome', [
-            'canLogin' => Route::has('login'),
-            'canRegister' => Route::has('register'),
-        ]);
+        return Inertia::render('Welcome');
+    }
+
+    public function features(): Response
+    {
+        return Inertia::render('Features');
+    }
+
+    public function howItWorks(): Response
+    {
+        return Inertia::render('HowItWorks');
+    }
+
+    public function faq(): Response
+    {
+        return Inertia::render('Faq');
     }
 }

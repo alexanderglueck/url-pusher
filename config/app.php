@@ -64,6 +64,14 @@ return [
     'mobile_url' => env('MOBILE_URL', env('APP_URL', 'http://localhost')),
 
     /*
+    | Where the "Download Android app" button on the marketing pages points.
+    | Defaults to the app-served file at /storage/url-pusher.apk (place the
+    | build at storage/app/public/url-pusher.apk). Set APK_DOWNLOAD_URL to an
+    | absolute URL to serve it from elsewhere (e.g. a GitHub release).
+    */
+    'android_apk_url' => env('APK_DOWNLOAD_URL', '/storage/url-pusher.apk'),
+
+    /*
     |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
