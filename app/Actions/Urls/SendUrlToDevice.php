@@ -5,7 +5,6 @@ namespace App\Actions\Urls;
 use App\Models\Url;
 use Illuminate\Support\Facades\Log;
 use Kreait\Firebase\Exception\FirebaseException;
-use Kreait\Firebase\Exception\InvalidArgumentException;
 use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Laravel\Firebase\Facades\Firebase;
@@ -43,9 +42,12 @@ class SendUrlToDevice
             Log::debug('Push response', [$result]);
 
             $status = Url::PUSH_SENT;
-        } catch (MessagingException|FirebaseException|InvalidArgumentException $e) {
+        } catch (FirebaseException $e) {
+            // Only MessagingException carries structured errors(); the broader
+            // FirebaseException markers (RuntimeException, InvalidArgumentException)
+            // do not, so guard the call to avoid a fatal.
             Log::debug('Push response', [
-                'errors' => $e->errors(),
+                'errors' => $e instanceof MessagingException ? $e->errors() : [],
                 'message' => $e->getMessage(),
             ]);
 
