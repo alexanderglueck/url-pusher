@@ -32,7 +32,7 @@ class UrlTrashTest extends TestCase
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Urls/Trash')
                 ->has('urls', 1)
-                ->where('urls.0.id', $url->id)
+                ->where('urls.0.id', $url->ulid)
             );
     }
 
@@ -43,7 +43,7 @@ class UrlTrashTest extends TestCase
         $url->delete();
 
         $this->actingAs($user)
-            ->patch(route('urls.restore', $url->id))
+            ->patch(route('urls.restore', $url->ulid))
             ->assertRedirect();
 
         $this->assertNotSoftDeleted($url);
@@ -56,7 +56,7 @@ class UrlTrashTest extends TestCase
         $url->delete();
 
         $this->actingAs($user)
-            ->delete(route('urls.force-delete', $url->id))
+            ->delete(route('urls.force-delete', $url->ulid))
             ->assertRedirect();
 
         $this->assertDatabaseMissing('urls', ['id' => $url->id]);
@@ -68,7 +68,7 @@ class UrlTrashTest extends TestCase
         $url->delete();
 
         $this->actingAs(User::factory()->create())
-            ->patch(route('urls.restore', $url->id))
+            ->patch(route('urls.restore', $url->ulid))
             ->assertNotFound();
 
         $this->assertSoftDeleted($url);

@@ -53,8 +53,8 @@ class DashboardTest extends TestCase
         $this->actingAs($user)
             ->get(route('dashboard'))
             ->assertInertia(fn (Assert $page) => $page
-                ->where('devices.0.id', $newer->id)
-                ->where('devices.1.id', $older->id)
+                ->where('devices.0.id', $newer->ulid)
+                ->where('devices.1.id', $older->ulid)
             );
     }
 

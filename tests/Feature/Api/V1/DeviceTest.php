@@ -34,7 +34,7 @@ class DeviceTest extends TestCase
 
         $this->postJson(route('api.v1.devices.token.store', $device), ['token' => 'fcm-token'])
             ->assertOk()
-            ->assertJson(['data' => ['id' => $device->id, 'can_push' => true]]);
+            ->assertJson(['data' => ['id' => $device->ulid, 'can_push' => true]]);
 
         $this->assertDatabaseHas('devices', [
             'id' => $device->id,

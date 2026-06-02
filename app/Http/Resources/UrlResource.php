@@ -15,7 +15,7 @@ class UrlResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'id' => $this->ulid,
             'url' => $this->url,
             'title' => $this->title,
             'description' => $this->description,
@@ -23,7 +23,7 @@ class UrlResource extends JsonResource
             'push_status' => $this->push_status,
             'pushed_at' => $this->pushed_at,
             'is_favorite' => $this->is_favorite,
-            'device_id' => $this->device_id,
+            'device_id' => $this->device?->ulid,
             'device' => new DeviceResource($this->whenLoaded('device')),
             'created_at' => $this->created_at,
         ];

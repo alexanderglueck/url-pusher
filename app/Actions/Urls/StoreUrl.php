@@ -12,12 +12,17 @@ class StoreUrl
     /**
      * Store a URL for the user against the given device and resolve its title.
      *
-     * @param  array{url: string, device_id: int|string}  $attributes
+     * The device is referenced by its public ULID; we resolve it (scoped to the
+     * user) to the internal foreign key.
+     *
+     * @param  array{url: string, device_id: string}  $attributes
      */
     public function handle(User $user, array $attributes): Url
     {
+        $device = $user->devices()->where('ulid', $attributes['device_id'])->firstOrFail();
+
         $url = new Url(['url' => $attributes['url']]);
-        $url->device_id = $attributes['device_id'];
+        $url->device_id = $device->id;
         $url->push_status = Url::PUSH_PENDING;
 
         $user->urls()->save($url);

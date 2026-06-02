@@ -33,7 +33,7 @@ class SendUrlToDevice
             ->withData([
                 'title' => (string) $url->title,
                 'url' => (string) $url->url,
-                'user_id' => (string) $url->user_id,
+                'user_id' => (string) $url->user->ulid,
             ]);
 
         try {

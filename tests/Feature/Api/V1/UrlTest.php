@@ -35,9 +35,9 @@ class UrlTest extends TestCase
         $this->getJson(route('api.v1.urls.index'))
             ->assertOk()
             ->assertJsonCount(2, 'data')
-            ->assertJsonPath('data.0.id', $latest->id)
-            ->assertJsonPath('data.1.id', $first->id)
-            ->assertJsonPath('data.0.device.id', $device->id)
+            ->assertJsonPath('data.0.id', $latest->ulid)
+            ->assertJsonPath('data.1.id', $first->ulid)
+            ->assertJsonPath('data.0.device.id', $device->ulid)
             ->assertJsonStructure([
                 'data' => [['id', 'url', 'title', 'device_id', 'device' => ['id', 'name']]],
                 'meta' => ['next_cursor'],
@@ -56,11 +56,11 @@ class UrlTest extends TestCase
         Sanctum::actingAs($user);
 
         $this->postJson(route('api.v1.urls.store'), [
-            'device_id' => $device->id,
+            'device_id' => $device->ulid,
             'url' => 'https://example.org',
         ])
             ->assertCreated()
-            ->assertJson(['data' => ['url' => 'https://example.org', 'device_id' => $device->id]]);
+            ->assertJson(['data' => ['url' => 'https://example.org', 'device_id' => $device->ulid]]);
 
         $this->assertDatabaseHas('urls', [
             'user_id' => $user->id,
@@ -77,7 +77,7 @@ class UrlTest extends TestCase
         Sanctum::actingAs($user);
 
         $this->postJson(route('api.v1.urls.store'), [
-            'device_id' => $device->id,
+            'device_id' => $device->ulid,
             'url' => 'https://example.org',
         ])->assertForbidden();
     }
@@ -106,5 +106,24 @@ class UrlTest extends TestCase
         $this->deleteJson(route('api.v1.urls.destroy', $url))->assertForbidden();
 
         $this->assertModelExists($url);
+    }
+
+    public function test_the_api_exposes_ulids_and_never_the_numeric_id(): void
+    {
+        $user = User::factory()->create();
+        $device = Device::factory()->create(['user_id' => $user->id]);
+        $url = Url::factory()->create(['user_id' => $user->id, 'device_id' => $device->id]);
+
+        Sanctum::actingAs($user);
+
+        $response = $this->getJson(route('api.v1.urls.index'))->assertOk();
+
+        // The public id is the 26-char ULID, not the sequential primary key.
+        $this->assertSame($url->ulid, $response->json('data.0.id'));
+        $this->assertSame(26, strlen((string) $response->json('data.0.id')));
+
+        // The internal auto-increment ids must not leak into the payload.
+        $this->assertStringNotContainsString('"id":'.$url->id, $response->getContent());
+        $this->assertStringNotContainsString('"device_id":'.$device->id, $response->getContent());
     }
 }

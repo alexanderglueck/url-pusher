@@ -24,7 +24,7 @@ class UrlController extends Controller
     {
         $urls = $request->user()->urls()
             ->with('device')
-            ->orderByDesc('id')
+            ->orderByDesc('ulid')
             ->cursorPaginate(20);
 
         return UrlResource::collection($urls);

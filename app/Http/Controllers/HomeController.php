@@ -13,7 +13,7 @@ class HomeController extends Controller
     {
         $devices = $request->user()->devices()->withDeviceToken()->latest()->get()
             ->map(fn ($device) => [
-                'id' => $device->id,
+                'id' => $device->ulid,
                 'name' => $device->name,
             ]);
 
@@ -30,7 +30,7 @@ class HomeController extends Controller
         $total = (clone $query)->count();
 
         $urls = $query->limit($limit)->get()->map(fn (Url $url) => [
-            'id' => $url->id,
+            'id' => $url->ulid,
             'url' => $url->url,
             'title' => $url->title,
             'description' => $url->description,
@@ -39,7 +39,7 @@ class HomeController extends Controller
             'is_favorite' => $url->is_favorite,
             'created_at_human' => $url->created_at->diffForHumans(),
             'device' => [
-                'id' => $url->device?->id,
+                'id' => $url->device?->ulid,
                 'name' => $url->device?->name,
                 'can_push' => (bool) $url->device?->device_token,
             ],

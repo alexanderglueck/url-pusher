@@ -98,7 +98,7 @@ class AuthTest extends TestCase
 
         $this->getJson(route('api.v1.auth.me'))
             ->assertOk()
-            ->assertJson(['data' => ['id' => $user->id, 'email' => $user->email]]);
+            ->assertJson(['data' => ['id' => $user->ulid, 'email' => $user->email]]);
     }
 
     public function test_logging_out_revokes_the_current_token(): void

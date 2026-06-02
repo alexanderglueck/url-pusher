@@ -20,7 +20,7 @@ class DeviceController extends Controller
         return Inertia::render('Devices/Index', [
             'devices' => $request->user()->devices()->get()
                 ->map(fn (Device $device) => [
-                    'id' => $device->id,
+                    'id' => $device->ulid,
                     'name' => $device->name,
                     'can_push' => (bool) $device->device_token,
                 ]),

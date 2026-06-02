@@ -17,7 +17,7 @@ class UrlController extends Controller
     {
         $urls = $request->user()->urls()->onlyTrashed()->with('device')->latest('deleted_at')->get()
             ->map(fn (Url $url) => [
-                'id' => $url->id,
+                'id' => $url->ulid,
                 'url' => $url->url,
                 'title' => $url->title,
                 'image' => $url->image,
@@ -28,16 +28,16 @@ class UrlController extends Controller
         return Inertia::render('Urls/Trash', ['urls' => $urls]);
     }
 
-    public function restore(Request $request, int $id): RedirectResponse
+    public function restore(Request $request, string $ulid): RedirectResponse
     {
-        $request->user()->urls()->onlyTrashed()->findOrFail($id)->restore();
+        $request->user()->urls()->onlyTrashed()->where('ulid', $ulid)->firstOrFail()->restore();
 
         return back();
     }
 
-    public function forceDelete(Request $request, int $id): RedirectResponse
+    public function forceDelete(Request $request, string $ulid): RedirectResponse
     {
-        $request->user()->urls()->onlyTrashed()->findOrFail($id)->forceDelete();
+        $request->user()->urls()->onlyTrashed()->where('ulid', $ulid)->firstOrFail()->forceDelete();
 
         return back();
     }
@@ -85,7 +85,7 @@ class UrlController extends Controller
         $request->user()->devices()->withDeviceToken()->get()->each(function ($device) use ($request, $storeUrl, $sendUrlToDevice, $validated) {
             $url = $storeUrl->handle($request->user(), [
                 'url' => $validated['url'],
-                'device_id' => $device->id,
+                'device_id' => $device->ulid,
             ]);
 
             $sendUrlToDevice->handle($url);
