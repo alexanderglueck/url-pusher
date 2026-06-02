@@ -9,6 +9,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
+import LinkThumbnail from '@/Components/LinkThumbnail.vue';
 
 const props = defineProps({
     devices: {
@@ -220,13 +221,7 @@ const destroy = (url) => {
                             <li v-for="url in urls" :key="url.id" class="px-6 py-4">
                                 <div class="flex justify-between">
                                     <div class="flex flex-1 min-w-0 gap-3">
-                                        <img
-                                            v-if="url.image"
-                                            :src="url.image"
-                                            alt=""
-                                            class="h-12 w-12 shrink-0 rounded object-cover bg-gray-100"
-                                            @error="(e) => (e.target.style.display = 'none')"
-                                        >
+                                        <LinkThumbnail :src="url.image" />
                                         <div class="min-w-0">
                                             <a
                                                 :href="url.url"

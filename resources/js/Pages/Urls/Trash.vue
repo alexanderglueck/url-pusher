@@ -3,6 +3,7 @@ import { Link, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
+import LinkThumbnail from '@/Components/LinkThumbnail.vue';
 
 defineProps({
     urls: {
@@ -43,13 +44,7 @@ const forceDelete = (url) => {
                         <li v-for="url in urls" :key="url.id" class="px-6 py-4">
                             <div class="flex justify-between">
                                 <div class="flex flex-1 min-w-0 gap-3">
-                                    <img
-                                        v-if="url.image"
-                                        :src="url.image"
-                                        alt=""
-                                        class="h-12 w-12 shrink-0 rounded object-cover bg-gray-100"
-                                        @error="(e) => (e.target.style.display = 'none')"
-                                    >
+                                    <LinkThumbnail :src="url.image" />
                                     <div class="min-w-0">
                                         <span class="block font-medium text-gray-900 truncate">{{ url.title }}</span>
                                         <span class="block text-sm text-gray-500 truncate">{{ url.url }}</span>
