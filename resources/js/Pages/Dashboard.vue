@@ -215,7 +215,7 @@ const destroy = (url) => {
                             </Link>
                         </div>
 
-                        <div v-if="urls.length" class="bg-white overflow-hidden shadow sm:rounded-md mt-4">
+                        <div v-if="urls.length" class="bg-white shadow sm:rounded-md mt-4">
                         <ul class="divide-y divide-gray-200">
                             <li v-for="url in urls" :key="url.id" class="px-6 py-4">
                                 <div class="flex justify-between">

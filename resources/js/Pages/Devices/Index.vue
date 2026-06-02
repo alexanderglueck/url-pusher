@@ -39,7 +39,7 @@ const destroy = (device) => {
                     </Link>
                 </div>
 
-                <div v-if="devices.length" class="bg-white overflow-hidden shadow sm:rounded-md">
+                <div v-if="devices.length" class="bg-white shadow sm:rounded-md">
                     <ul class="divide-y divide-gray-200">
                         <li v-for="device in devices" :key="device.id" class="px-6 py-4">
                             <div class="flex justify-between">
