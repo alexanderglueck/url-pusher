@@ -4,6 +4,7 @@ import { router, useForm } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import FormSection from '@/Components/FormSection.vue';
 import SectionBorder from '@/Components/SectionBorder.vue';
+import ActionMessage from '@/Components/ActionMessage.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -76,6 +77,10 @@ const confirmDelete = () => {
                 </template>
 
                 <template #actions>
+                    <ActionMessage :on="form.recentlySuccessful" class="me-3">
+                        Saved.
+                    </ActionMessage>
+
                     <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                         Save
                     </PrimaryButton>
