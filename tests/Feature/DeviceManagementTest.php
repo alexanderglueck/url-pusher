@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Device;
+use App\Models\Url;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -62,6 +63,24 @@ class DeviceManagementTest extends TestCase
             ->assertRedirect(route('devices.index'));
 
         $this->assertModelMissing($device);
+    }
+
+    public function test_deleting_a_device_keeps_its_pushes(): void
+    {
+        $user = User::factory()->create();
+        $device = Device::factory()->create(['user_id' => $user->id]);
+        $url = Url::factory()->create(['user_id' => $user->id, 'device_id' => $device->id]);
+
+        $this->actingAs($user)
+            ->delete(route('devices.destroy', $device))
+            ->assertRedirect(route('devices.index'));
+
+        // The push must survive (the FK is SET NULL, not CASCADE) and remain
+        // a live row, not a soft-deleted one.
+        $this->assertModelMissing($device);
+        $url->refresh();
+        $this->assertNull($url->deleted_at);
+        $this->assertNull($url->device_id);
     }
 
     public function test_a_user_cannot_update_another_users_device(): void
