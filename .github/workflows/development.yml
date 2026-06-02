@@ -10,8 +10,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build the testing image
-        run: docker build --target testing -t urlpusher-test .
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: testing
+          tags: urlpusher-test
+          load: true
+          # Restore/persist Docker layers in the GitHub Actions cache so
+          # unchanged stages (PHP extensions, npm ci, composer install) are
+          # reused instead of rebuilt on every push. mode=max also caches the
+          # intermediate build stages (assets, base, vendor-dev).
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Run the test suite
         run: docker run --rm -e APP_KEY=base64:$(openssl rand -base64 32) urlpusher-test
