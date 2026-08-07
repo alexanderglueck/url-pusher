@@ -13,6 +13,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // TLS terminates at the Cloudflare tunnel, so requests arrive here as
+        // plain HTTP. Without trusting the proxy's X-Forwarded-Proto every
+        // generated URL comes out http:// on an https:// page and the browser
+        // blocks it as mixed content. Safe to trust any proxy: the container is
+        // only reachable through the tunnel and the internal Docker network.
+        $middleware->trustProxies(at: '*');
+
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
