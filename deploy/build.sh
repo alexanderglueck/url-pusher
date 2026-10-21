@@ -6,7 +6,7 @@ set -euo pipefail
 APP="${APP:-url-pusher}"
 
 echo "[build] ${APP}:latest (target: production)"
-docker build --target production -t "${APP}:latest" .
+docker build --pull --target production -t "${APP}:latest" .
 
 echo "[build] ${APP}-web:latest (nginx front)"
 docker build -f docker/nginx.Dockerfile --build-arg "APP_IMAGE=${APP}:latest" -t "${APP}-web:latest" .
