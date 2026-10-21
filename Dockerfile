@@ -25,7 +25,7 @@ COPY resources ./resources
 RUN npm run build
 
 # ---- Shared PHP-FPM runtime -------------------------------------------------
-FROM php:8.5-fpm AS base
+FROM php:8.5.12-fpm AS base
 WORKDIR /app
 
 # Single cached download, already executable (no chmod/sync step needed).
