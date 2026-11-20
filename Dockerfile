@@ -13,7 +13,7 @@
 # =============================================================================
 
 # ---- Composer binary --------------------------------------------------------
-FROM composer:2.9 AS composer-bin
+FROM composer:2.11 AS composer-bin
 
 # ---- Front-end assets -------------------------------------------------------
 FROM node:24-alpine AS assets
